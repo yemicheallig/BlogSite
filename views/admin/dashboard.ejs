@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Blogify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --admin-sidebar-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .sidebar {
+            background-color: var(--admin-sidebar-bg);
+            min-vh-100;
+            position: fixed;
+        }
+
+        .sidebar .nav-link {
+            color: #94a3b8;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: #1e293b;
+        }
+
+        .main-content {
+            margin-left: 16.66667%;
+            padding: 2rem;
+        }
+
+        .metric-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 sidebar p-3 text-white">
+                <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary">
+                    <i class="bi bi-box-fill text-primary fs-4 me-2"></i>
+                    <span class="fs-5 fw-bold">Blogify</span>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="/admin/dashboard"><i
+                                class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/posts"><i
+                                class="bi bi-file-earmark-text me-2"></i> Posts</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/profile"><i class="bi bi-person me-2"></i>
+                            Profile</a></li>
+                    <li class="nav-item mt-5"><a class="nav-link text-danger" href="/admin/logout"><i
+                                class="bi bi-box-arrow-left me-2"></i> Logout</a></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+                    <div>
+                        <h1 class="h4 fw-bold mb-1">Dashboard</h1>
+                        <p class="text-muted small mb-0">Welcome back, <%= user.name %>! Here is your blog's performance
+                                summary.</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="<%= user.avatar %>" class="rounded-circle" width="36" height="36" alt="Avatar">
+                        <div class="lh-sm">
+                            <div class="small fw-bold">
+                                <%= user.name %>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Admin</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card metric-card shadow-sm p-3 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-muted small uppercase mb-1">Total Posts</h6>
+                                    <h3 class="fw-bold mb-0">
+                                        <%= metrics.totalPosts %>
+                                    </h3>
+                                </div>
+                                <div class="icon-box bg-primary-subtle text-primary">
+                                    <i class="bi bi-file-earmark-post fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card metric-card shadow-sm p-3 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-muted small uppercase mb-1">Published</h6>
+                                    <h3 class="fw-bold mb-0 text-success">
+                                        <%= metrics.publishedPosts %>
+                                    </h3>
+                                </div>
+                                <div class="icon-box bg-success-subtle text-success">
+                                    <i class="bi bi-bookmark-check fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card metric-card shadow-sm p-3 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-muted small uppercase mb-1">Drafts</h6>
+                                    <h3 class="fw-bold mb-0 text-warning">
+                                        <%= metrics.draftPosts %>
+                                    </h3>
+                                </div>
+                                <div class="icon-box bg-warning-subtle text-warning">
+                                    <i class="bi bi-pencil-square fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card metric-card shadow-sm p-3 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-muted small uppercase mb-1">Categories</h6>
+                                    <h3 class="fw-bold mb-0">
+                                        <%= metrics.categories %>
+                                    </h3>
+                                </div>
+                                <div class="icon-box bg-info-subtle text-info">
+                                    <i class="bi bi-tags fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card metric-card shadow-sm p-3 bg-white">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-muted small uppercase mb-1">Media Files</h6>
+                                    <h3 class="fw-bold mb-0">
+                                        <%= metrics.totalMedia %>
+                                    </h3>
+                                </div>
+                                <div class="icon-box bg-danger-subtle text-danger">
+                                    <i class="bi bi-images fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-white border-0 py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">Recently Added Posts</h5>
+                            <a href="/admin/posts" class="btn btn-outline-secondary btn-sm"
+                                style="font-size: 12px;">View All Posts</a>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Cover</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th class="pe-4">Date Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (recentPosts.length===0) { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted small">No posts yet.</td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% recentPosts.forEach(post=> { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <img src="<%= post.featured_image || '/images/default-thumbnail.jpg' %>"
+                                                        class="post-thumbnail" alt="Cover">
+                                                </td>
+                                                <td>
+                                                    <span class="fw-semibold text-dark">
+                                                        <%= post.title %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark border px-2 py-1">
+                                                        <%= post.category_name || 'Uncategorized' %>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="badge rounded-pill text-capitalize px-2.5 py-1.5 <%= post.status === 'published' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-dark' %>">
+                                                        <%= post.status %>
+                                                    </span>
+                                                </td>
+                                                <td class="text-muted small pe-4">
+                                                    <%= new Date(post.created_at).toLocaleDateString('en-US', {
+                                                        year: 'numeric' , month: 'short' , day: 'numeric' }) %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

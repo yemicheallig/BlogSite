@@ -1,0 +1,117 @@
+# How to Start
+
+Follow these steps to set up and run the project locally.
+
+## Prerequisites
+
+- Node.js (v18 or higher recommended)
+- MySQL (running locally or hosted)
+
+## Setup Steps
+
+### 1. Clone the Repository & Install Dependencies
+
+```bash
+git clone <your-repo-url>
+cd <repo-name>
+npm install
+```
+
+### 2. Configure Environment Variables
+
+Copy `.env.example` to a new file named `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and fill in your actual database credentials.
+
+### 3. Initialize the Database
+
+```bash
+node config/initDb.js
+```
+
+### 4. Start the Application
+
+```bash
+npm start
+```
+
+The application will run at:
+
+```
+http://localhost:3000
+```
+
+(or your configured port).
+
+---
+
+# Project Flow (How the Code Works)
+
+This project uses the **Model-View-Controller (MVC)** architectural pattern. The following diagram illustrates how a request travels through the application.
+
+```text
+               ┌────────────────────────┐
+               │    Client/Browser      │ <────────────────────────┐
+               └────────────────────────┘                          │
+                           │ (HTTP Request)                        │
+                           ▼                                       │ (HTML Rendered)
+                     ┌───────────┐                                 │
+                     │  app.js   │ (Entry Point)                   │
+                     └───────────┘                                 │
+                           │                                       │
+                           ▼                                       │
+                   ┌──────────────┐                                │
+                   │   routes/    │                                │
+                   └──────────────┘                                │
+                           │                                       │
+                           ▼                                       │
+                ┌──────────────────┐                               │
+                │   middleware/    │ (e.g., Session check)         │
+                └──────────────────┘                               │
+                           │                                       │
+                           ▼                                       │
+                ┌──────────────────┐                               │
+                │   controllers/   │ ──────────────────────────────┘
+                └──────────────────┘
+                     │        │
+         (Fetch/Save)│        │ (Passes Data)
+                     ▼        ▼
+               ┌────────┐  ┌────────┐
+               │ models/│  │ views/ │ (EJS Templates)
+               └────────┘  └────────┘
+                   │
+                   ▼
+               ┌────────┐
+               │ config/│ (Database)
+               └────────┘
+```
+
+## Flow Breakdown
+
+### app.js
+
+Initializes Express, registers global middlewarses, and links to your `routes/`.
+
+### routes/
+
+Matches the incoming URL path (e.g., `/admin/dashboard`) and routes it.
+
+### middleware/
+
+Intercepts requests to check authentication (`authMiddleware.js`) or validate input data (`validators.js`) before letting them proceed.
+
+### controllers/
+
+Handles the main business logic (e.g., `adminController.js` handles loading the dashboard data).
+
+### models/ & config/
+
+The controller talks to your model (`userModel.js`) to query/write data to MySQL (`db.js`).
+
+### views/
+
+The controller renders the correct `.ejs` template, injecting any dynamic data to send back to the user's browser.

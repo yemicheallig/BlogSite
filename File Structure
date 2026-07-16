@@ -1,0 +1,33 @@
+config/
+-db.Js
+-initDb.Js
+controllers/
+-postController.Js
+-adminController.Js
+-authController.Js
+middleware/
+-authMiddleware.Js
+-validators.Js
+models/
+-userModel.Js
+node_modules/
+public/
+ images/
+  thumbnail-defa.jpg
+routes/
+-admin.Js
+-authRoutes.Js
+uploads/
+views/
+ admin/
+  posts/
+   -create.ejs
+   -edit.ejs
+   -index.ejs
+  -dashboard.ejs
+  -login.ejs
+  -profile.ejs
+  -register.ejs
+app.Js
+package-lock.json
+package.json
