@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const app = express();
+require('events').EventEmitter.defaultMaxListeners = 20;
 
 // 1. Configure view engine and static assets FIRST
 app.set('view engine', 'ejs');

@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+    <main class="container py-5">
+        <!-- Search Bar & Results Status -->
+        <div class="mb-5 max-width: 600px; mx-auto text-center">
+            <h1 class="fw-bold mb-3">Global Search</h1>
+            <form action="/blogs" method="GET"
+                class="d-flex position-relative shadow-sm rounded-pill overflow-hidden max-width: 500px; mx-auto">
+                <span class="position-absolute top-50 start-0 translate-middle-y ps-4 text-muted">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input class="form-control form-control-lg ps-5 border-0 bg-white rounded-pill py-3" type="search"
+                    name="q" value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+                    placeholder="Search articles, topics, or categories..." style="font-size: 1.1rem;">
+                <button class="btn btn-primary px-4 rounded-pill position-absolute end-0 top-50 translate-middle-y me-1"
+                    type="submit">Search</button>
+            </form>
+        </div>
+
+        <!-- Search Status Message -->
+        <% if (typeof searchQuery !=='undefined' && searchQuery) { %>
+            <div class="mb-4">
+                <p class="text-muted">Showing results for <span class="text-primary fw-semibold">"<%= searchQuery %>
+                            "</span> (<%= posts.length %> articles found)</p>
+            </div>
+            <% } %>
+
+                <!-- Results Grid -->
+                <div class="row g-4">
+                    <div class="col-lg-12">
+                        <% if (posts.length===0) { %>
+                            <div class="text-center py-5 bg-white rounded-3 border border-light-subtle shadow-sm">
+                                <i class="bi bi-search-heart display-1 text-muted mb-3"></i>
+                                <h4 class="fw-bold">No results found</h4>
+                                <p class="text-muted">We couldn't find any matches. Try using different keywords or
+                                    exploring categories.</p>
+                                <a href="/blogs" class="btn btn-outline-primary rounded-3 mt-2">Browse All Blogs</a>
+                            </div>
+                            <% } else { %>
+                                <div class="d-flex flex-column gap-4">
+                                    <% posts.forEach(post=> { %>
+                                        <div class="card border-0 bg-white rounded-3 p-3 hover-card shadow-sm">
+                                            <div class="row g-3 align-items-center">
+                                                <div class="col-md-3">
+                                                    <img src="<%= post.featured_image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80' %>"
+                                                        class="img-fluid rounded-3 w-100" alt="<%= post.title %>"
+                                                        style="height: 140px; object-fit: cover;">
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <span class="badge bg-light text-primary mb-2">
+                                                        <%= post.category_name %>
+                                                    </span>
+                                                    <h4 class="fw-bold mb-2">
+                                                        <a href="/post/<%= post.id %>"
+                                                            class="text-decoration-none text-dark hover-primary-link">
+                                                            <%= post.title %>
+                                                        </a>
+                                                    </h4>
+                                                    <p class="text-muted small mb-3">
+                                                        <%= post.excerpt || 'Read this post to learn more about ' +
+                                                            post.title %>
+                                                    </p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">By <%= post.author_name %> • <%= new
+                                                                    Date(post.created_at).toLocaleDateString('en-US', {
+                                                                    month: 'short' , day: 'numeric' , year: 'numeric' })
+                                                                    %></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+    </main>
+
+    <%- include('../partials/footer') %>

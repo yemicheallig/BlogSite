@@ -1,48 +1,302 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
+const db = require('../config/db')
 
-// Handle Admin & User Login
-exports.login = async (req, res) => {
-  const { email, password } = req.body;
+// =========================================================================
+// 1. HOME PAGE
+// =========================================================================
+exports.index = async (req,res)=>{
+  try {
+        // 1. Fetch 3 Featured Posts (We will order by publish_date/created_at, and join categories & users)
+        // Note: Since 'is_featured' isn't explicitly in your posts schema, we can pull the 3 most recent published posts as our "featured" carousel/grid.
+        const [featuredPosts] = await db.query(
+            `SELECT p.id, p.title, p.featured_image, p.created_at, c.name AS category_name
+             FROM posts p
+             LEFT JOIN categories c ON p.category_id = c.id
+             WHERE p.status = 'published'
+             ORDER BY p.created_at DESC
+             LIMIT 3`
+        );
+
+        // 2. Fetch 5 Latest Posts
+        const [latestPosts] = await db.query(
+            `SELECT p.id, p.title, p.featured_image, p.summary AS excerpt, p.created_at, 
+                    c.name AS category_name, u.name AS author_name
+             FROM posts p
+             LEFT JOIN categories c ON p.category_id = c.id
+             LEFT JOIN users u ON p.author_id = u.id
+             WHERE p.status = 'published'
+             ORDER BY p.created_at DESC
+             LIMIT 5`
+        );
+
+        // 3. Fetch Categories with their published post counts
+        const [categories] = await db.query(
+            `SELECT c.name, COUNT(p.id) AS count 
+             FROM categories c
+             INNER JOIN posts p ON p.category_id = c.id
+             WHERE p.status = 'published'
+             GROUP BY c.id, c.name
+             ORDER BY count DESC`
+        );
+
+        // Render the index template inside views/public/
+        res.render('public/index', {
+            title: 'Blogify - Home',
+            activePage: 'home',
+            featuredPosts: featuredPosts,
+            latestPosts: latestPosts,
+            categories: categories
+        });
+
+    } catch (error) {
+        console.error('Error loading home page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+// =========================================================================
+// 2. BLOG DIRECTORY & GLOBAL SEARCH
+// =========================================================================
+exports.blogs = async (req,res)=>{
+  try {
+        const limit = 6; 
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * limit;
+        
+        const selectedCategory = req.query.category || null;
+        const searchQuery = req.query.q || null;
+
+        let whereClauses = ["p.status = 'published'"];
+        let queryParams = [];
+
+        // Category Filter
+        if (selectedCategory) {
+            whereClauses.push("c.name = ?");
+            queryParams.push(selectedCategory);
+        }
+
+        // Search Filter
+        if (searchQuery) {
+            whereClauses.push("(p.title LIKE ? OR p.content LIKE ? OR c.name LIKE ?)");
+            const wildCard = `%${searchQuery}%`;
+            queryParams.push(wildCard, wildCard, wildCard);
+        }
+
+        const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
+
+        // Get total posts count for pagination
+        const [countResult] = await db.query(
+            `SELECT COUNT(*) as total 
+             FROM posts p
+             LEFT JOIN categories c ON p.category_id = c.id
+             ${whereSQL}`,
+            queryParams
+        );
+        const totalPosts = countResult[0].total;
+        const totalPages = Math.ceil(totalPosts / limit);
+
+        // Fetch posts for active page
+        const postsQuery = `
+            SELECT p.id, p.title, p.featured_image, p.summary AS excerpt, p.created_at, 
+                   c.name AS category_name, u.name AS author_name
+            FROM posts p
+            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN users u ON p.author_id = u.id
+            ${whereSQL}
+            ORDER BY p.created_at DESC
+            LIMIT ? OFFSET ?
+        `;
+        
+        const [posts] = await db.query(postsQuery, [...queryParams, limit, offset]);
+
+        // Fetch category list counts
+        const [categories] = await db.query(
+            `SELECT c.name, COUNT(p.id) AS count 
+             FROM categories c
+             INNER JOIN posts p ON p.category_id = c.id
+             WHERE p.status = 'published'
+             GROUP BY c.id, c.name
+             ORDER BY count DESC`
+        );
+
+        res.render('public/blogs', {
+            title: searchQuery ? `Search results for "${searchQuery}"` : 'All Blog Posts',
+            activePage: 'blogs',
+            posts,
+            categories,
+            selectedCategory,
+            searchQuery,
+            currentPage: page,
+            totalPages
+        });
+    } catch (error) {
+        console.error('Error in blogs controller:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+// =========================================================================
+// 3. SINGLE POST READER
+// =========================================================================
+exports.posts = async (req,res)=>{
 
   try {
-    // 1. Fetch user by email
-    const user = await User.findByEmail(email);
-    if (!user) {
-      return res.status(401).render('login', { error: 'Invalid email or password.' });
-    }
+        const postId = req.params.id;
 
-    // 2. Verify hashed password securely using bcrypt
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).render('login', { error: 'Invalid email or password.' });
-    }
+        // 1. Fetch current post
+        const [posts] = await db.query(
+            `SELECT p.*, c.name AS category_name, u.name AS author_name, u.avatar AS author_avatar
+             FROM posts p
+             LEFT JOIN categories c ON p.category_id = c.id
+             LEFT JOIN users u ON p.author_id = u.id
+             WHERE p.id = ? AND p.status = 'published'`,
+            [postId]
+        );
 
-    // 3. Establish Session State
-    req.session.userId = user.id;
-    req.session.userName = user.name;
-    req.session.userRole = user.role;
+        if (posts.length === 0) {
+            return res.status(404).send('Post Not Found');
+        }
 
-    // 4. Track state and redirect based on privileges
-    if (user.role === 'admin') {
-      return res.redirect('/admin/dashboard');
+        const currentPost = posts[0];
+
+        // 2. Reading Time Calculation (avg 200 words per minute)
+        const wordCount = currentPost.content.split(/\s+/).length;
+        const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+
+        // 3. Get Previous published post (ID smaller than current)
+        const [prevResult] = await db.query(
+            `SELECT id, title FROM posts WHERE id < ? AND status = 'published' ORDER BY id DESC LIMIT 1`,
+            [postId]
+        );
+
+        // 4. Get Next published post (ID larger than current)
+        const [nextResult] = await db.query(
+            `SELECT id, title FROM posts WHERE id > ? AND status = 'published' ORDER BY id ASC LIMIT 1`,
+            [postId]
+        );
+
+        const currentUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+
+        res.render('public/post', {
+            title: currentPost.title,
+            activePage: 'blogs',
+            post: currentPost,
+            readingTime: readingTime,
+            prevPost: prevResult.length > 0 ? prevResult[0] : null,
+            nextPost: nextResult.length > 0 ? nextResult[0] : null,
+            currentUrl: currentUrl
+        });
+
+    } catch (error) {
+        console.error('Error rendering single post:', error);
+        res.status(500).send('Internal Server Error');
     }
-    res.redirect('/');
-    
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).render('login', { error: 'An unexpected server error occurred.' });
-  }
+}
+
+// =========================================================================
+// 4. CONTACT PAGE (GET & POST)
+// =========================================================================
+exports.contact = async (req,res)=>{
+    try {
+        res.render('public/contact', {
+            title: 'Contact Us - Blogify',
+            activePage: 'contact',
+            success: req.query.success === 'true'
+        });
+    } catch (error) {
+        console.error('Error in contact GET controller:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+exports.contactForm = async(req,res)=>{
+  try {
+        const { name, email, subject, message } = req.body;
+
+        // Basic Server-Side Validation Rules
+        if (!name || name.trim() === '' || 
+            !email || email.trim() === '' || 
+            !subject || subject.trim() === '' || 
+            !message || message.trim() === '') {
+            return res.status(400).send('All fields are required.');
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).send('Invalid email format.');
+        }
+
+        // Write to contact_messages table matching your exact database schema
+        await db.query(
+            `INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)`,
+            [name.trim(), email.trim(), subject.trim(), message.trim()]
+        );
+
+        // Redirect back with success message flag
+        res.redirect('/contact?success=true');
+
+    } catch (error) {
+        console.error('Error saving contact message:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+// =========================================================================
+// 5. ABOUT US PAGE
+// =========================================================================
+exports.about = async(req,res) =>{
+  try {
+        res.render('public/about', {
+            title: 'About Us - Blogify',
+            activePage: 'about'
+        });
+        console.log('Hello')
+    } catch (error) {
+        console.error('Error in aboutUs controller:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+
+// =========================================================================
+// 6.  SEARCH PAGE
+// =========================================================================
+// Dedicated Search Page
+exports.searchPage = async (req, res) => {
+    try {
+        const searchQuery = req.query.q || null;
+
+        if (!searchQuery) {
+            // Render clean template with empty states if no query provided
+            return res.render('public/search', {
+                title: 'Search Articles - Blogify',
+                activePage: 'search',
+                posts: [],
+                searchQuery: null
+            });
+        }
+
+        // Run query checking against Title, Content, and Category matching schema constraints
+        const [posts] = await db.query(
+            `SELECT p.id, p.title, p.featured_image, p.summary AS excerpt, p.created_at, 
+                    c.name AS category_name, u.name AS author_name
+             FROM posts p
+             LEFT JOIN categories c ON p.category_id = c.id
+             LEFT JOIN users u ON p.author_id = u.id
+             WHERE p.status = 'published' AND (p.title LIKE ? OR p.content LIKE ? OR c.name LIKE ?)
+             ORDER BY p.created_at DESC`,
+            [`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`]
+        );
+
+        res.render('public/search', {
+            title: `Search results for "${searchQuery}"`,
+            activePage: 'search',
+            posts,
+            searchQuery
+        });
+    } catch (error) {
+        console.error('Error inside search controller:', error);
+        res.status(500).send('Internal Server Error');
+    }
 };
-
-// Handle Logout
-exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Logout error:', err);
-    }
-    res.redirect('/login');
-  });
-};
-
-
