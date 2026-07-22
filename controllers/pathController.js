@@ -185,7 +185,15 @@ exports.posts = async (req,res)=>{
             readingTime: readingTime,
             prevPost: prevResult.length > 0 ? prevResult[0] : null,
             nextPost: nextResult.length > 0 ? nextResult[0] : null,
-            currentUrl: currentUrl
+            currentUrl: currentUrl,
+
+            // Dynamic Meta Tag Injection
+            meta: {
+                title: `${currentPost.title} | Blogify`,
+                description: currentPost.summary || currentPost.content.substring(0, 150).replace(/(<([^>]+)>)/gi, '') + '...',
+                image: currentPost.featured_image,
+                type: 'article'
+            }
         });
 
     } catch (error) {
@@ -200,9 +208,15 @@ exports.posts = async (req,res)=>{
 exports.contact = async (req,res)=>{
     try {
         res.render('public/contact', {
-            title: 'Contact Us - Blogify',
             activePage: 'contact',
-            success: req.query.success === 'true'
+            success: req.query.success === 'true',
+            formData: {},
+            error: null,
+            meta: {
+            title: 'About Us - Our Story & Mission | Blogify',
+            description: 'Learn more about Blogify, our mission, and the engineering team behind our software development blog.'
+        }
+
         });
     } catch (error) {
         console.error('Error in contact GET controller:', error);
@@ -213,19 +227,31 @@ exports.contact = async (req,res)=>{
 exports.contactForm = async(req,res)=>{
   try {
         const { name, email, subject, message } = req.body;
+        const formData = { name, email, subject, message };
 
         // Basic Server-Side Validation Rules
         if (!name || name.trim() === '' || 
             !email || email.trim() === '' || 
             !subject || subject.trim() === '' || 
             !message || message.trim() === '') {
-            return res.status(400).send('All fields are required.');
-        }
+                return res.status(400).render('public/contact', {
+                  activePage: 'contact',
+                    success: false,
+                    error: 'All fields are required.',
+                    formData,
+                    meta: { title: 'Contact Us | Blogify' }
+            });  
+       }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return res.status(400).send('Invalid email format.');
-        }
+        if (!emailRegex.test(email.trim())) {
+            return res.status(400).render('public/contact', {
+                activePage: 'contact',
+                success: false,
+                error: 'Please enter a valid email address.',
+                formData,
+                meta: { title: 'Contact Us | Blogify' }
+            });        }
 
         // Write to contact_messages table matching your exact database schema
         await db.query(
@@ -238,7 +264,13 @@ exports.contactForm = async(req,res)=>{
 
     } catch (error) {
         console.error('Error saving contact message:', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).render('public/contact', {
+            activePage: 'contact',
+            success: false,
+            error: 'Something went wrong on our end. Please try again later.',
+            formData,
+            meta: { title: 'Contact Us | Blogify' }
+        });
     }
 }
 
@@ -258,7 +290,6 @@ exports.about = async(req,res) =>{
     }
 }
 
-
 // =========================================================================
 // 6.  SEARCH PAGE
 // =========================================================================
@@ -270,10 +301,13 @@ exports.searchPage = async (req, res) => {
         if (!searchQuery) {
             // Render clean template with empty states if no query provided
             return res.render('public/search', {
-                title: 'Search Articles - Blogify',
                 activePage: 'search',
                 posts: [],
-                searchQuery: null
+                searchQuery: null,
+                meta: {
+            title: searchQuery ? `Search: "${searchQuery}" | Blogify` : 'Search Articles | Blogify',
+            description: `Search results for ${searchQuery || 'articles and tutorials on Blogify'}.`
+        }
             });
         }
 
@@ -298,5 +332,40 @@ exports.searchPage = async (req, res) => {
     } catch (error) {
         console.error('Error inside search controller:', error);
         res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.getSitemap = async (req, res) => {
+    try {
+        const [posts] = await db.query(
+            "SELECT id, updated_at FROM posts WHERE status = 'published' ORDER BY updated_at DESC"
+        );
+
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+        xml += `<urlset xmlns="http://www.sitemapindices.org/schemas/sitemap/0.9">\n`;
+
+        // Static Pages
+        xml += `  <url><loc>https://blogify.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+        xml += `  <url><loc>https://blogify.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n`;
+        xml += `  <url><loc>https://blogify.com/blogs</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+
+        // Dynamic Post Pages
+        posts.forEach(post => {
+            const date = new Date(post.updated_at).toISOString();
+            xml += `  <url>\n`;
+            xml += `    <loc>https://blogify.com/post/${post.id}</loc>\n`;
+            xml += `    <lastmod>${date}</lastmod>\n`;
+            xml += `    <changefreq>weekly</changefreq>\n`;
+            xml += `    <priority>0.7</priority>\n`;
+            xml += `  </url>\n`;
+        });
+
+        xml += `</urlset>`;
+
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        console.error('Error generating sitemap:', error);
+        res.status(500).end();
     }
 };

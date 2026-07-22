@@ -14,20 +14,24 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background-color: #f8fafc;
         }
 
+        /* Fixed sidebar styling to use sticky positioning */
         .sidebar {
             background-color: var(--admin-sidebar-bg);
-            min-vh-100;
-            position: fixed;
+            min-height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .sidebar .nav-link {
             color: #94a3b8;
             border-radius: 6px;
             margin-bottom: 4px;
+            transition: all 0.2s ease-in-out;
         }
 
         .sidebar .nav-link:hover,
@@ -36,35 +40,46 @@
             background-color: #1e293b;
         }
 
-        .main-content {
-            margin-left: 16.66667%;
-            padding: 2rem;
+        /* Image preview empty state styling */
+        .image-preview-container {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.5rem;
+            background-color: #f1f5f9;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
         }
     </style>
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-3 col-lg-2 sidebar p-3 text-white">
+            <nav class="col-md-3 col-lg-2 d-none d-md-block sidebar p-3 text-white shadow-sm">
                 <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary">
                     <i class="bi bi-box-fill text-primary fs-4 me-2"></i>
                     <span class="fs-5 fw-bold">Blogify</span>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/admin/dashboard"><i
-                                class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/admin/posts"><i
-                                class="bi bi-file-earmark-text me-2"></i> Posts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/profile"><i class="bi bi-person me-2"></i>
-                            Profile</a></li>
-                    <li class="nav-item mt-5"><a class="nav-link text-danger" href="/admin/logout"><i
-                                class="bi bi-box-arrow-left me-2"></i> Logout</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard"><i class="bi bi-speedometer2 me-2"></i>
+                            Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/posts"><i class="bi bi-file-earmark-text me-2"></i>
+                            Posts</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/profile"><i class="bi bi-person me-2"></i> Profile</a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="/admin/logout"><i class="bi bi-box-arrow-left me-2"></i>
+                            Logout</a>
+                    </li>
                 </ul>
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
                     <div>
                         <h1 class="h4 fw-bold mb-1">Create New Post</h1>
@@ -75,8 +90,8 @@
                     </a>
                 </div>
 
-                <% if (error) { %>
-                    <div class="alert alert-danger alert-dismissible fade show py-2 small" role="alert">
+                <% if (typeof error !=='undefined' && error) { %>
+                    <div class="alert alert-danger alert-dismissible fade show py-2 small shadow-sm" role="alert">
                         <%= error %>
                             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"
                                 aria-label="Close"></button>
@@ -85,44 +100,53 @@
 
                         <div class="card border-0 shadow-sm rounded-3">
                             <div class="card-body p-4">
-                                <form action="/admin/posts/create" method="POST" enctype="multipart/form-data">
-                                    <div class="row">
+                                <form action="/admin/posts/create" method="POST" enctype="multipart/form-data"
+                                    class="needs-validation" novalidate>
+                                    <div class="row g-4">
                                         <div class="col-lg-8">
                                             <div class="mb-3">
                                                 <label for="title"
                                                     class="form-label fw-semibold text-dark small">Article Title</label>
                                                 <input type="text" class="form-control" id="title" name="title"
                                                     placeholder="Enter post title..." required>
+                                                <div class="invalid-feedback">Please provide an article title.</div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="summary"
                                                     class="form-label fw-semibold text-dark small">Short Summary</label>
-                                                <textarea class="form-control" id="summary" name="summary" rows="3"
-                                                    placeholder="Write a brief intro summary for index page previews..."></textarea>
+                                                <textarea class="form-control" id="summary" name="summary" rows="2"
+                                                    placeholder="Write a brief intro summary for index page previews..."
+                                                    required></textarea>
+                                                <div class="invalid-feedback">A short summary is required.</div>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label for="content" class="form-label fw-semibold text-dark small">Full
                                                     Content</label>
-                                                <textarea class="form-control" id="content" name="content" rows="12"
+                                                <textarea class="form-control" id="content" name="content" rows="15"
                                                     placeholder="Write your full article content here..."
                                                     required></textarea>
+                                                <div class="invalid-feedback">Article content cannot be empty.</div>
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4 border-start ps-lg-4">
+                                        <div class="col-lg-4 border-start-lg ps-lg-4">
                                             <div class="mb-3">
                                                 <label for="category_id"
                                                     class="form-label fw-semibold text-dark small">Category</label>
-                                                <select class="form-select" id="category_id" name="category_id">
+                                                <select class="form-select" id="category_id" name="category_id"
+                                                    required>
                                                     <option value="">-- Select Category --</option>
-                                                    <% categories.forEach(cat=> { %>
-                                                        <option value="<%= cat.id %>">
-                                                            <%= cat.name %>
-                                                        </option>
-                                                        <% }) %>
+                                                    <% if (typeof categories !=='undefined' ) { %>
+                                                        <% categories.forEach(cat=> { %>
+                                                            <option value="<%= cat.id %>">
+                                                                <%= cat.name %>
+                                                            </option>
+                                                            <% }) %>
+                                                                <% } %>
                                                 </select>
+                                                <div class="invalid-feedback">Please select a category.</div>
                                             </div>
 
                                             <div class="mb-3">
@@ -139,18 +163,24 @@
                                                 <label for="featured_image"
                                                     class="form-label fw-semibold text-dark small">Featured
                                                     Image</label>
-                                                <input type="file" class="form-control" id="featured_image"
+                                                <input type="file" class="form-control mb-2" id="featured_image"
                                                     name="featured_image" accept="image/*"
-                                                    onchange="previewImage(event)">
-                                                <div class="mt-3">
+                                                    onchange="previewImage(event)" required>
+                                                <div class="invalid-feedback">An image is required.</div>
+
+                                                <div
+                                                    class="image-preview-container mt-2 d-flex align-items-center justify-content-center p-2">
+                                                    <span id="imagePreviewText" class="text-muted small">No image
+                                                        selected</span>
                                                     <img id="imagePreview" src="#" alt="Preview"
-                                                        class="img-fluid rounded border d-none"
-                                                        style="max-height: 200px; width: 100%; object-fit: cover;">
+                                                        class="img-fluid rounded d-none"
+                                                        style="max-height: 200px; width: 100%; object-fit: contain;">
                                                 </div>
                                             </div>
 
-                                            <div class="d-grid gap-2 pt-2 border-top">
-                                                <button type="submit" class="btn btn-primary">Create and Save</button>
+                                            <div class="d-grid gap-2 pt-3 border-top">
+                                                <button type="submit" class="btn btn-primary fw-semibold">Create
+                                                    Post</button>
                                                 <a href="/admin/posts" class="btn btn-light">Cancel</a>
                                             </div>
                                         </div>
@@ -162,21 +192,44 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Image Preview Logic
         function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function () {
-                const output = document.getElementById('imagePreview');
-                output.src = reader.result;
-                output.classList.remove('d-none');
-            };
-            if (event.target.files[0]) {
-                reader.readAsDataURL(event.target.files[0]);
+            const file = event.target.files[0];
+            const output = document.getElementById('imagePreview');
+            const placeholderText = document.getElementById('imagePreviewText');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function () {
+                    output.src = reader.result;
+                    output.classList.remove('d-none');
+                    placeholderText.classList.add('d-none');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                output.src = '#';
+                output.classList.add('d-none');
+                placeholderText.classList.remove('d-none');
             }
         }
+
+        // Bootstrap Client-Side Validation Logic
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
-

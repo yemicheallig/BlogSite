@@ -30,7 +30,7 @@
                 <% featuredPosts.forEach(post=> { %>
                     <div class="col-md-4">
                         <div class="card h-100 border-0 bg-white rounded-3 hover-card">
-                            <img src="<%= post.featured_image|| 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80' %>"
+                            <img loading="lazy" decoding="async" src="<%= post.featured_image|| 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80' %>"
                                 class="card-img-top rounded-top-3" alt="<%= post.title %>"
                                 style="height: 200px; object-fit: cover;">
                             <div class="card-body p-4">
@@ -68,7 +68,7 @@
                         <div class="card border-0 bg-white rounded-3 p-3 hover-card">
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-4">
-                                    <img src="<%= post.featured_image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80' %>"
+                                    <img loading="lazy" decoding="async" src="<%= post.featured_image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80' %>"
                                         class="img-fluid rounded-3 w-100" alt="<%= post.title %>"
                                         style="height: 140px; object-fit: cover;">
                                 </div>

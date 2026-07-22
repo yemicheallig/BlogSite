@@ -18,10 +18,15 @@
             background-color: #f8fafc;
         }
 
+        /* Sidebar Base Styles */
         .sidebar {
             background-color: var(--admin-sidebar-bg);
-            min-vh-100;
+            min-height: 100vh;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1045;
+            transition: transform 0.3s ease-in-out;
         }
 
         .sidebar .nav-link {
@@ -37,38 +42,111 @@
         }
 
         .main-content {
-            margin-left: 16.66667%;
             padding: 2rem;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 280px;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.25rem;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
+        }
+
+        /* Desktop specific styles */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+
+            .main-content {
+                margin-left: 25%;
+                /* Matches col-md-3 */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                margin-left: 16.66667%;
+                /* Matches col-lg-2 */
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-3 col-lg-2 sidebar p-3 text-white">
+            <nav id="sidebar" class="col-md-3 col-lg-2 sidebar p-3 text-white">
                 <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary">
                     <i class="bi bi-box-fill text-primary fs-4 me-2"></i>
                     <span class="fs-5 fw-bold">Blogify</span>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/admin/dashboard"><i
-                                class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/admin/posts"><i
-                                class="bi bi-file-earmark-text me-2"></i> Posts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/profile"><i class="bi bi-person me-2"></i>
-                            Profile</a></li>
-                    <li class="nav-item mt-5"><a class="nav-link text-danger" href="/admin/logout"><i
-                                class="bi bi-box-arrow-left me-2"></i> Logout</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/posts">
+                            <i class="bi bi-file-earmark-text me-2"></i> Posts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/profile">
+                            <i class="bi bi-person me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="/admin/logout">
+                            <i class="bi bi-box-arrow-left me-2"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
-                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                    <div>
-                        <h1 class="h4 fw-bold mb-1">Edit Post</h1>
-                        <p class="text-muted small mb-0">Modify and update your article's metrics or contents.</p>
+            <main class="col-12 main-content">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom flex-wrap gap-3">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary d-md-none me-3" id="sidebarToggle">
+                            <i class="bi bi-list fs-5"></i>
+                        </button>
+                        <div>
+                            <h1 class="h4 fw-bold mb-1">Edit Post</h1>
+                            <p class="text-muted small mb-0">Modify and update your article's metrics or contents.</p>
+                        </div>
                     </div>
                     <a href="/admin/posts" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
                         <i class="bi bi-arrow-left"></i> Back to Directory
@@ -166,6 +244,7 @@
     </div>
 
     <script>
+        // Image preview logic
         function previewImage(event) {
             const reader = new FileReader();
             reader.onload = function () {
@@ -177,6 +256,27 @@
                 reader.readAsDataURL(event.target.files[0]);
             }
         }
+
+        // Sidebar toggle logic for mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                if (overlay.classList.contains('show')) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.classList.remove('show'), 300);
+                } else {
+                    overlay.classList.add('show');
+                    setTimeout(() => overlay.style.opacity = '1', 10);
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
