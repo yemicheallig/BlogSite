@@ -35,15 +35,31 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+    res.locals.req = req; // Makes 'req' available inside ALL EJS templates
+    next();
+});
+
 // 5. Mount Router Files (Clean and uncluttered)
-const authRoutes = require('./routes/authRoutes');
+const pathRoutes = require('./routes/pathRoutes');
 const adminRoutes = require('./routes/admin');
 
-app.use('/', authRoutes);
+app.use('/', pathRoutes);
 app.use('/', adminRoutes); // Mounts everything from routes/admin.js
 
-// 6. Public route fallback
-app.get('/login', (req, res) => res.render('login', { error: null }));
+// -------------------------------------------------------------
+// 404 CATCH-ALL MIDDLEWARE 
+// -------------------------------------------------------------
+app.use((req, res) => {
+    res.status(404).render('public/404', {
+        title: '404 - Page Not Found | Blogify',
+        activePage: '',
+        meta: {
+            title: '404 - Page Not Found | Blogify',
+            description: 'The requested page could not be found on Blogify.'
+        }
+    });
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;

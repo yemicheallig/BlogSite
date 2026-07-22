@@ -18,10 +18,15 @@
             background-color: #f8fafc;
         }
 
+        /* Sidebar Base Styles */
         .sidebar {
             background-color: var(--admin-sidebar-bg);
-            min-vh-100;
+            min-height: 100vh;
             position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1045;
+            transition: transform 0.3s ease-in-out;
         }
 
         .sidebar .nav-link {
@@ -37,8 +42,62 @@
         }
 
         .main-content {
-            margin-left: 16.66667%;
             padding: 2rem;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 280px;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.25rem;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
+        }
+
+        /* Desktop specific styles */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+
+            .main-content {
+                margin-left: 25%;
+                /* Matches col-md-3 */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                margin-left: 16.66667%;
+                /* Matches col-lg-2 */
+            }
         }
 
         .metric-card {
@@ -70,36 +129,56 @@
 </head>
 
 <body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="container-fluid">
         <div class="row">
-            <nav class="col-md-3 col-lg-2 sidebar p-3 text-white">
+            <nav id="sidebar" class="col-md-3 col-lg-2 sidebar p-3 text-white">
                 <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary">
                     <i class="bi bi-box-fill text-primary fs-4 me-2"></i>
                     <span class="fs-5 fw-bold">Blogify</span>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link active" href="/admin/dashboard"><i
-                                class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/posts"><i
-                                class="bi bi-file-earmark-text me-2"></i> Posts</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/profile"><i class="bi bi-person me-2"></i>
-                            Profile</a></li>
-                    <li class="nav-item mt-5"><a class="nav-link text-danger" href="/admin/logout"><i
-                                class="bi bi-box-arrow-left me-2"></i> Logout</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/posts">
+                            <i class="bi bi-file-earmark-text me-2"></i> Posts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/profile">
+                            <i class="bi bi-person me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="/admin/logout">
+                            <i class="bi bi-box-arrow-left me-2"></i> Logout
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+            <main class="col-12 main-content">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-                    <div>
-                        <h1 class="h4 fw-bold mb-1">Dashboard</h1>
-                        <p class="text-muted small mb-0">Welcome back, <%= user.name %>! Here is your blog's performance
-                                summary.</p>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary d-md-none me-3" id="sidebarToggle">
+                            <i class="bi bi-list fs-5"></i>
+                        </button>
+                        <div>
+                            <h1 class="h4 fw-bold mb-1">Dashboard</h1>
+                            <!-- Hide welcome message on very small screens to save space -->
+                            <p class="text-muted small mb-0 d-none d-sm-block">Welcome back, <%= user.name %>! Here is
+                                    your blog's performance summary.</p>
+                        </div>
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <img src="<%= user.avatar %>" class="rounded-circle" width="36" height="36" alt="Avatar">
-                        <div class="lh-sm">
+                        <div class="lh-sm d-none d-sm-block">
                             <div class="small fw-bold">
                                 <%= user.name %>
                             </div>
@@ -108,12 +187,13 @@
                     </div>
                 </div>
 
+                <!-- Added col-12 for proper mobile stacking -->
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <div class="card metric-card shadow-sm p-3 bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted small uppercase mb-1">Total Posts</h6>
+                                    <h6 class="text-muted small text-uppercase mb-1">Total Posts</h6>
                                     <h3 class="fw-bold mb-0">
                                         <%= metrics.totalPosts %>
                                     </h3>
@@ -125,11 +205,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <div class="card metric-card shadow-sm p-3 bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted small uppercase mb-1">Published</h6>
+                                    <h6 class="text-muted small text-uppercase mb-1">Published</h6>
                                     <h3 class="fw-bold mb-0 text-success">
                                         <%= metrics.publishedPosts %>
                                     </h3>
@@ -141,11 +221,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <div class="card metric-card shadow-sm p-3 bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted small uppercase mb-1">Drafts</h6>
+                                    <h6 class="text-muted small text-uppercase mb-1">Drafts</h6>
                                     <h3 class="fw-bold mb-0 text-warning">
                                         <%= metrics.draftPosts %>
                                     </h3>
@@ -157,11 +237,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-6">
+                    <div class="col-12 col-md-6">
                         <div class="card metric-card shadow-sm p-3 bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted small uppercase mb-1">Categories</h6>
+                                    <h6 class="text-muted small text-uppercase mb-1">Categories</h6>
                                     <h3 class="fw-bold mb-0">
                                         <%= metrics.categories %>
                                     </h3>
@@ -173,11 +253,11 @@
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-6">
+                    <div class="col-12 col-md-6">
                         <div class="card metric-card shadow-sm p-3 bg-white">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted small uppercase mb-1">Media Files</h6>
+                                    <h6 class="text-muted small text-uppercase mb-1">Media Files</h6>
                                     <h3 class="fw-bold mb-0">
                                         <%= metrics.totalMedia %>
                                     </h3>
@@ -195,11 +275,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="fw-bold mb-0 text-dark" style="font-size: 16px;">Recently Added Posts</h5>
                             <a href="/admin/posts" class="btn btn-outline-secondary btn-sm"
-                                style="font-size: 12px;">View All Posts</a>
+                                style="font-size: 12px;">View All</a>
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0 text-nowrap">
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-4">Cover</th>
@@ -233,7 +313,7 @@
                                                 </td>
                                                 <td>
                                                     <span
-                                                        class="badge rounded-pill text-capitalize px-2.5 py-1.5 <%= post.status === 'published' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-dark' %>">
+                                                        class="badge rounded-pill text-capitalize px-2 py-1 <%= post.status === 'published' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-dark' %>">
                                                         <%= post.status %>
                                                     </span>
                                                 </td>
@@ -253,6 +333,29 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar toggle logic for mobile
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                // Use a small timeout to allow display:block to apply before changing opacity
+                if (overlay.classList.contains('show')) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.classList.remove('show'), 300);
+                } else {
+                    overlay.classList.add('show');
+                    setTimeout(() => overlay.style.opacity = '1', 10);
+                }
+            }
+
+            toggleBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+        });
+    </script>
 </body>
 
 </html>
