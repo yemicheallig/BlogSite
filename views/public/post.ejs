@@ -1,0 +1,89 @@
+<%- include('../partials/header') %>
+
+    <main class="container py-5" style="max-width: 800px;">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Home</a></li>
+                <li class="breadcrumb-item"><a href="/blogs" class="text-decoration-none text-muted">Blogs</a></li>
+                <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page">
+                    <%= post.category_name %>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Post Header Info -->
+        <header class="mb-4">
+            <span class="badge bg-light text-primary px-3 py-2 rounded-pill mb-3 fw-semibold"># <%= post.category_name
+                    %></span>
+            <h1 class="display-5 fw-bold text-dark mb-3">
+                <%= post.title %>
+            </h1>
+
+            <div class="d-flex align-items-center gap-3 text-muted">
+                <!-- Author Avatar & Details -->
+                <% if (post.author_avatar) { %>
+                    <img src="<%= post.author_avatar %>" alt="<%= post.author_name %>" class="rounded-circle"
+                        style="width: 40px; height: 40px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold"
+                            style="width: 40px; height: 40px;">
+                            <%= post.author_name.charAt(0).toUpperCase() %>
+                        </div>
+                        <% } %>
+                            <div>
+                                <p class="mb-0 fw-semibold text-dark">
+                                    <%= post.author_name %>
+                                </p>
+                                <small>
+                                    <%= new Date(post.created_at).toLocaleDateString('en-US', { month: 'long' ,
+                                        day: 'numeric' , year: 'numeric' }) %> • <%= readingTime %> min read
+                                </small>
+                            </div>
+            </div>
+        </header>
+
+        <!-- Featured Image -->
+        <div class="mb-5">
+            <img src="<%= post.featured_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80' %>"
+                alt="<%= post.title %>" class="img-fluid rounded-4 shadow-sm w-100"
+                style="max-height: 450px; object-fit: cover;">
+        </div>
+
+        <!-- Main Content Body -->
+        <article class="lh-lg text-secondary fs-5 mb-5" style="white-space: pre-line;">
+            <%= post.content %>
+        </article>
+
+        <!-- Social Share Buttons matched to Figma (Page 3) -->
+        <div class="d-flex align-items-center gap-3 border-top border-bottom py-3 mb-5">
+            <span class="fw-semibold text-dark small me-2">Share this article:</span>
+            <a href="https://twitter.com/share?url=<%= encodeURIComponent(currentUrl) %>" target="_blank"
+                class="text-muted"><i class="bi bi-twitter-x fs-5"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(currentUrl) %>" target="_blank"
+                class="text-muted"><i class="bi bi-facebook fs-5"></i></a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(currentUrl) %>"
+                target="_blank" class="text-muted"><i class="bi bi-linkedin fs-5"></i></a>
+        </div>
+
+        <!-- Navigation (Prev/Next Articles) -->
+        <div class="row pt-4 g-4 border-top">
+            <div class="col-md-6 text-start">
+                <% if (prevPost) { %>
+                    <small class="text-muted text-uppercase tracking-wider d-block mb-1">Previous Article</small>
+                    <a href="/post/<%= prevPost.id %>" class="text-decoration-none text-primary fw-bold fs-5">&larr; <%=
+                            prevPost.title %></a>
+                    <% } %>
+            </div>
+            <div class="col-md-6 text-end">
+                <% if (nextPost) { %>
+                    <small class="text-muted text-uppercase tracking-wider d-block mb-1">Next Article</small>
+                    <a href="/post/<%= nextPost.id %>" class="text-decoration-none text-primary fw-bold fs-5">
+                        <%= nextPost.title %> &rarr;
+                    </a>
+                    <% } %>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

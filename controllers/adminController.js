@@ -254,3 +254,13 @@ exports.logOut =  async  (req, res) => {
         res.redirect('/'); // Or '/admin/login'
     });
 };
+
+// Handle Logout
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Logout error:', err);
+    }
+    res.redirect('/login');
+  });
+};

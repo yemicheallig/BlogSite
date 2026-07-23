@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !=='undefined' ? title : 'Blogify' %>
+    </title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background-color: #f8fafc;
+        }
+
+        .btn-primary {
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8 !important;
+            border-color: #1d4ed8 !important;
+        }
+
+        .text-primary {
+            color: #2563eb !important;
+        }
+
+        .nav-link.active {
+            color: #2563eb !important;
+            font-weight: 600;
+        }
+
+        /* Card transitions for clean UX */
+        .hover-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-3">
+        <div class="container">
+            <!-- Brand Logo matching design (Blue circle icon + Blogify text) -->
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-dark" href="/">
+                <span
+                    class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                    style="width: 32px; height: 32px;">
+                    <i class="bi bi-bootstrap-fill fs-6"></i>
+                </span>
+                Blogify
+            </a>
+
+            <button class="navbar-expand-lg navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Centered Nav Links -->
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link <%= activePage === 'home' ? 'active' : '' %>" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <%= activePage === 'blogs' ? 'active' : '' %>" href="/blogs">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <%= activePage === 'about' ? 'active' : '' %>" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <%= activePage === 'contact' ? 'active' : '' %>" href="/contact">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Search bar on the right -->
+                <form class="d-flex position-relative" action="/search" method="GET" style="max-width: 240px;">
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input class="form-control ps-5 rounded-pill border-light-subtle bg-light" type="search" name="q"
+                        placeholder="Search..." aria-label="Search">
+                </form>
+            </div>
+        </div>
+    </nav>

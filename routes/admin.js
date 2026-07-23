@@ -76,4 +76,6 @@ router.post('/admin/posts/edit/:id', isAdmin, uploadPostImg.single('featured_ima
 router.post('/admin/posts/delete/:id', isAdmin, postController.deletePost);
 router.post('/admin/posts/toggle-status/:id', isAdmin, postController.togglePostStatus);
 
+router.get('/logout', adminController.logout);
+
 module.exports = router;

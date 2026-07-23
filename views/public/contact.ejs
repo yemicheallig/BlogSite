@@ -1,0 +1,91 @@
+<%- include('../partials/header') %>
+
+    <main class="container py-5">
+        <div class="row g-5">
+            <!-- Interactive Form (Left) -->
+            <div class="col-lg-7">
+                <div class="bg-white p-5 rounded-4 shadow-sm border border-light-subtle">
+                    <h2 class="fw-bold text-dark mb-2">Get In Touch</h2>
+                    <p class="text-muted mb-4">Have a question or just want to say hello? We'd love to hear from you.
+                    </p>
+
+                    <!-- Success Alert (Shown if query parameter success exists) -->
+                    <% if (typeof success !=='undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show rounded-3 p-3 mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> Your message has been sent successfully! We'll
+                            get back to you soon.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% } %>
+
+                            <form action="/contact" method="POST" novalidate class="needs-validation">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label fw-medium">Full Name</label>
+                                    <input type="text" class="form-control rounded-3" id="name" name="name"
+                                        placeholder="Enter your name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-medium">Email Address</label>
+                                    <input type="email" class="form-control rounded-3" id="email" name="email"
+                                        placeholder="Enter your email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label fw-medium">Subject</label>
+                                    <input type="text" class="form-control rounded-3" id="subject" name="subject"
+                                        placeholder="Enter subject" required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="message" class="form-label fw-medium">Message</label>
+                                    <textarea class="form-control rounded-3" id="message" name="message" rows="5"
+                                        placeholder="Your message..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold">Send
+                                    Message</button>
+                            </form>
+                </div>
+            </div>
+
+            <!-- Contact Information Sidebar (Right) -->
+            <div class="col-lg-5">
+                <div
+                    class="bg-white p-5 rounded-4 border border-light-subtle shadow-sm h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-4">Contact Information</h4>
+
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <div>
+                                <p class="fw-bold mb-0 text-dark">Email</p>
+                                <a href="mailto:hello@blogify.com"
+                                    class="text-decoration-none text-muted">hello@blogify.com</a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+                            <div>
+                                <p class="fw-bold mb-0 text-dark">Phone</p>
+                                <a href="tel:+11234567890" class="text-decoration-none text-muted">+1 (123) 456-7890</a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3">
+                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
+                                <i class="bi bi-geo-alt"></i>
+                            </span>
+                            <div>
+                                <p class="fw-bold mb-0 text-dark">Location</p>
+                                <span class="text-muted">New York, USA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>

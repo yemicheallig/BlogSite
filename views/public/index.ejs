@@ -1,0 +1,121 @@
+<%- include('../partials/header') %>
+
+    <main class="container py-5">
+        <!-- Hero Section (Split screen) -->
+        <div class="row align-items-center mb-5 g-5">
+            <div class="col-md-6">
+                <span
+                    class="badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 small fw-semibold">Welcome
+                    to Blogify</span>
+                <h1 class="display-4 fw-bold tracking-tight text-dark mb-3" style="line-height: 1.2;">
+                    Thoughts, stories and ideas that inspire.
+                </h1>
+                <p class="text-muted fs-5 mb-4">
+                    Explore our latest articles on technology, lifestyle, productivity and more.
+                </p>
+                <a href="/blogs" class="btn btn-primary px-4 py-2.5 rounded-3 fw-medium">Explore Blogs</a>
+            </div>
+            <div class="col-md-6">
+                <!-- Placeholder image matched to Figma styling -->
+                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80"
+                    alt="Inspirational Hero" class="img-fluid rounded-4 shadow-sm"
+                    style="height: 380px; width: 100%; object-fit: cover;">
+            </div>
+        </div>
+
+        <!-- Featured Section -->
+        <section class="mb-5">
+            <h4 class="fw-bold mb-4">Featured Posts</h4>
+            <div class="row g-4">
+                <% featuredPosts.forEach(post=> { %>
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 bg-white rounded-3 hover-card">
+                            <img src="<%= post.featured_image|| 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80' %>"
+                                class="card-img-top rounded-top-3" alt="<%= post.title %>"
+                                style="height: 200px; object-fit: cover;">
+                            <div class="card-body p-4">
+                                <span class="badge bg-light text-primary mb-2">
+                                    <%= post.category_name %>
+                                </span>
+                                <h5 class="card-title fw-bold mb-2">
+                                    <a href="/post/<%= post.id %>" class="text-decoration-none text-dark">
+                                        <%= post.title %>
+                                    </a>
+                                </h5>
+                                <p class="text-muted small mb-0">
+                                    <%= new Date(post.created_at).toLocaleDateString('en-US', { month: 'short' ,
+                                        day: 'numeric' , year: 'numeric' }) %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+        </section>
+
+        <!-- Main Content Split (Latest Posts vs Sidebar) -->
+        <div class="row g-5">
+            <!-- Latest Posts Grid (Left) -->
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold m-0">Latest Posts</h4>
+                    <a href="/blogs" class="text-primary text-decoration-none fw-semibold small">View all blogs
+                        &rarr;</a>
+                </div>
+
+                <div class="d-flex flex-column gap-4">
+                    <% latestPosts.forEach(post=> { %>
+                        <div class="card border-0 bg-white rounded-3 p-3 hover-card">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <img src="<%= post.featured_image || 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80' %>"
+                                        class="img-fluid rounded-3 w-100" alt="<%= post.title %>"
+                                        style="height: 140px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-8">
+                                    <span class="badge bg-light text-primary mb-2">
+                                        <%= post.category %>
+                                    </span>
+                                    <h5 class="fw-bold mb-2">
+                                        <a href="/post/<%= post.id %>" class="text-decoration-none text-dark">
+                                            <%= post.title %>
+                                        </a>
+                                    </h5>
+                                    <p class="text-muted small mb-3 text-truncate-2">
+                                        <%= post.excerpt %>
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <%= post.author %> • <%= new
+                                                    Date(post.created_at).toLocaleDateString('en-US', { month: 'short' ,
+                                                    day: 'numeric' , year: 'numeric' }) %>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+
+            <!-- Categories Sidebar (Right) -->
+            <div class="col-lg-4">
+                <div class="card border-0 bg-white p-4 rounded-3 shadow-sm position-sticky" style="top: 100px;">
+                    <h5 class="fw-bold mb-3">Popular Categories</h5>
+                    <div class="list-group list-group-flush">
+                        <% categories.forEach(cat=> { %>
+                            <a href="/blogs?category=<%= cat.name %>"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 py-2 border-0 bg-transparent text-muted hover-primary">
+                                <span># <%= cat.name %></span>
+                                <span class="badge bg-light text-secondary rounded-pill">
+                                    <%= cat.count %>
+                                </span>
+                            </a>
+                            <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <%- include('../partials/footer') %>
