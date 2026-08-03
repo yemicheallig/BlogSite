@@ -1,52 +1,150 @@
 <%- include('../partials/header') %>
 
-    <main class="container py-5">
+    <!-- Custom Styling for Hover & Subtle Entrance Animations -->
+    <style>
+        /* Card Hover Elevation Effects */
+        .hover-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .hover-border-card {
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .hover-border-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--bs-primary) !important;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Soft Fade/Slide-Up Entry Animations */
+        .animate-fade-up {
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <main class="container py-5 animate-fade-up">
+        <!-- Hero Section -->
         <div class="row align-items-center mb-5 g-5">
             <div class="col-md-6">
-                <h1 class="display-4 fw-bold text-dark mb-4">About Blogify</h1>
-                <p class="text-muted fs-5 mb-4">
-                    We are passionate about sharing knowledge, experiences, and insights on topics that matter.
+                <h1 class="display-4 fw-bold text-dark mb-4" style="letter-spacing: -0.02em;">
+                    About <span class="text-primary">Economixgna</span>
+                </h1>
+                <p class="text-muted fs-5 mb-4 leading-relaxed">
+                    Empowering every Ethiopian household with practical economic knowledge to build a financially
+                    resilient community.
                 </p>
 
-                <div class="mb-4">
-                    <h5 class="fw-bold text-primary">Our Mission</h5>
-                    <p class="text-muted">To create valuable content that informs, inspires, and helps our readers grow.
+                <div class="mb-4 p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
+                    <h5 class="fw-bold text-primary mb-2">Our Mission</h5>
+                    <p class="text-muted mb-0">
+                        To make economics simple, practical, and accessible by delivering trusted insights, engaging
+                        conversations, and innovative educational content that empower Ethiopian households to make
+                        informed financial decisions.
                     </p>
                 </div>
 
-                <div>
-                    <h5 class="fw-bold text-primary">Our Vision</h5>
-                    <p class="text-muted">To be a trusted source of high-quality content for a global audience.</p>
+                <div class="p-3 bg-light rounded-3 border-start border-4 border-primary shadow-sm">
+                    <h5 class="fw-bold text-primary mb-2">Our Vision</h5>
+                    <p class="text-muted mb-0">
+                        To empower every Ethiopian household with practical economic knowledge, while building a
+                        financially resilient and economically informed Ethiopia.
+                    </p>
                 </div>
             </div>
             <div class="col-md-6">
-                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
-                    alt="Our Team Workspace" class="img-fluid rounded-4 shadow-sm"
-                    style="height: 400px; width: 100%; object-fit: cover;">
+                <div class="overflow-hidden rounded-4 shadow-sm hover-card">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
+                        alt="Our Team Workspace" class="img-fluid"
+                        style="height: 420px; width: 100%; object-fit: cover; transition: transform 0.5s ease;"
+                        onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                </div>
             </div>
         </div>
 
-        <!-- Metrics Bar from Figma design (Page 4) -->
-        <div class="row g-4 text-center mt-5">
+        <!-- Metrics & Contact Info Cards -->
+        <div class="row g-4 text-center my-5">
             <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-0">
-                    <i class="bi bi-journal-richtext text-primary display-5 mb-2"></i>
-                    <h3 class="fw-bold m-0">150+</h3>
-                    <p class="text-muted m-0">Articles Published</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-0 h-100 hover-card">
+                    <i class="bi bi-tags text-primary display-5 mb-2 d-inline-block"></i>
+                    <h3 class="fw-bold m-0 text-dark">7</h3>
+                    <p class="text-muted m-0 fw-medium">Core Focus Areas</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-0">
-                    <i class="bi bi-people text-primary display-5 mb-2"></i>
-                    <h3 class="fw-bold m-0">10K+</h3>
-                    <p class="text-muted m-0">Readers</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-0 h-100 hover-card">
+                    <i class="bi bi-geo-alt text-primary display-5 mb-2 d-inline-block"></i>
+                    <h3 class="fw-bold fs-5 m-0 mt-1 text-dark">Addis Ababa</h3>
+                    <p class="text-muted small m-0 fw-medium">Kolfe Keraniyo, W. 07</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="p-4 bg-white rounded-3 shadow-sm border-0">
-                    <i class="bi bi-tags text-primary display-5 mb-2"></i>
-                    <h3 class="fw-bold m-0">5</h3>
-                    <p class="text-muted m-0">Categories</p>
+                <div class="p-4 bg-white rounded-3 shadow-sm border-0 h-100 hover-card">
+                    <i class="bi bi-envelope text-primary display-5 mb-2 d-inline-block"></i>
+                    <h3 class="fw-bold fs-6 m-0 mt-1 text-dark">Get in Touch</h3>
+                    <p class="text-muted small m-0 fw-medium">Economixgna2011@gmail.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Highlights Section -->
+        <div class="mt-5 pt-3">
+            <h3 class="fw-bold text-dark mb-4 text-center">
+                What We <span class="text-primary">Cover</span>
+            </h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Household Economics</h6>
+                        <p class="text-muted small m-0">Making better financial decisions at home.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Economy & Public Policy</h6>
+                        <p class="text-muted small m-0">Explaining Ethiopia’s economy in simple terms.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Money & Investment</h6>
+                        <p class="text-muted small m-0">Helping people build wealth.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Climate & Green Economy</h6>
+                        <p class="text-muted small m-0">Where economics meets the environment.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Tourism & Creative Economy</h6>
+                        <p class="text-muted small m-0">Tourism as an engine of economic growth.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 border rounded-3 bg-light hover-border-card h-100">
+                        <h6 class="fw-bold text-primary mb-2">Diaspora & Global Ethiopia</h6>
+                        <p class="text-muted small m-0">Connecting Ethiopians around the world.</p>
+                    </div>
                 </div>
             </div>
         </div>

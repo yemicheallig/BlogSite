@@ -6,6 +6,15 @@ const schemas = [
     name VARCHAR(100) NOT NULL UNIQUE
   ) ENGINE=InnoDB;`,
 
+  `INSERT IGNORE INTO categories (name) VALUES 
+('Household Economics'),
+('Economy and Public Policy'),
+('Money & Investment'),
+('Climate and Green Economy'),
+('Tourism & Creative Economy'),
+('Diaspora & Global Ethiopia'),
+('Economixgna Studio');`,
+
   `CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,

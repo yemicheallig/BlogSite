@@ -1,12 +1,51 @@
 <%- include('../partials/header') %>
 
-    <main class="container py-5">
+    <!-- Custom Styling for Interactive Cards & Entry Animations -->
+    <style>
+        .hover-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .hover-icon-box {
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .hover-icon-box:hover {
+            transform: scale(1.1);
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <main class="container py-5 animate-fade-up">
         <div class="row g-5">
-            <!-- Interactive Form (Left) -->
+            <!-- Interactive Contact Form (Left) -->
             <div class="col-lg-7">
-                <div class="bg-white p-5 rounded-4 shadow-sm border border-light-subtle">
-                    <h2 class="fw-bold text-dark mb-2">Get In Touch</h2>
-                    <p class="text-muted mb-4">Have a question or just want to say hello? We'd love to hear from you.
+                <div class="bg-white p-5 rounded-4 shadow-sm border border-light-subtle hover-card">
+                    <h2 class="fw-bold text-dark mb-2">
+                        Get In <span class="text-primary">Touch</span>
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Have a question or just want to connect with Economixgna? We'd love to hear from you.
                     </p>
 
                     <!-- Success Alert -->
@@ -17,16 +56,17 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         <% } %>
-                    
+
                             <!-- Error Alert -->
                             <% if (typeof error !=='undefined' && error) { %>
                                 <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     <%= error %>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
                                 </div>
                                 <% } %>
-                    
+
                                     <form action="/contact" method="POST" novalidate class="needs-validation">
                                         <div class="mb-3">
                                             <label for="name" class="form-label fw-medium">Full Name</label>
@@ -42,63 +82,77 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="subject" class="form-label fw-medium">Subject</label>
-                                            <input type="text" class="form-control rounded-3" id="subject" name="subject"
+                                            <input type="text" class="form-control rounded-3" id="subject"
+                                                name="subject"
                                                 value="<%= typeof formData !== 'undefined' && formData.subject ? formData.subject : '' %>"
                                                 placeholder="Enter subject" required>
                                         </div>
                                         <div class="mb-4">
                                             <label for="message" class="form-label fw-medium">Message</label>
-                                            <textarea class="form-control rounded-3" id="message" name="message" rows="5"
-                                                placeholder="Your message..."
+                                            <textarea class="form-control rounded-3" id="message" name="message"
+                                                rows="5" placeholder="Your message..."
                                                 required><%= typeof formData !== 'undefined' && formData.message ? formData.message : '' %></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold">
                                             Send Message
                                         </button>
                                     </form>
-
-                            
                 </div>
             </div>
 
             <!-- Contact Information Sidebar (Right) -->
             <div class="col-lg-5">
                 <div
-                    class="bg-white p-5 rounded-4 border border-light-subtle shadow-sm h-100 d-flex flex-column justify-content-between">
+                    class="bg-white p-5 rounded-4 border border-light-subtle shadow-sm h-100 d-flex flex-column justify-content-between hover-card">
                     <div>
-                        <h4 class="fw-bold text-dark mb-4">Contact Information</h4>
+                        <h4 class="fw-bold text-dark mb-4">
+                            Contact <span class="text-primary">Information</span>
+                        </h4>
 
+                        <!-- Email -->
                         <div class="d-flex align-items-start gap-3 mb-4">
-                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
-                                <i class="bi bi-envelope"></i>
+                            <span
+                                class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary hover-icon-box">
+                                <i class="bi bi-envelope fs-5"></i>
                             </span>
                             <div>
                                 <p class="fw-bold mb-0 text-dark">Email</p>
-                                <a href="mailto:hello@blogify.com"
-                                    class="text-decoration-none text-muted">hello@blogify.com</a>
+                                <a href="mailto:Economixgna2011@gmail.com" class="text-decoration-none text-muted">
+                                    Economixgna2011@gmail.com
+                                </a>
                             </div>
                         </div>
 
+                        <!-- Phone Numbers -->
                         <div class="d-flex align-items-start gap-3 mb-4">
-                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
-                                <i class="bi bi-telephone"></i>
+                            <span
+                                class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary hover-icon-box">
+                                <i class="bi bi-telephone fs-5"></i>
                             </span>
                             <div>
                                 <p class="fw-bold mb-0 text-dark">Phone</p>
-                                <a href="tel:+11234567890" class="text-decoration-none text-muted">+1 (123) 456-7890</a>
+                                <div class="d-flex flex-column">
+                                    <a href="tel:+251786510685" class="text-decoration-none text-muted">+251 786 510
+                                        685</a>
+                                    <a href="tel:+251951068553" class="text-decoration-none text-muted">+251 951 068
+                                        553</a>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-start gap-3">
-                            <span class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary">
-                                <i class="bi bi-geo-alt"></i>
+                        <!-- Location -->
+                        <div class="d-flex align-items-start gap-3 mb-4">
+                            <span
+                                class="bg-light-subtle p-2.5 rounded-3 border border-primary-subtle text-primary hover-icon-box">
+                                <i class="bi bi-geo-alt fs-5"></i>
                             </span>
                             <div>
                                 <p class="fw-bold mb-0 text-dark">Location</p>
-                                <span class="text-muted">New York, USA</span>
+                                <span class="text-muted">Addis Ababa, Kolfe Keraniyo, W. 07</span>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>

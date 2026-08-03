@@ -42,7 +42,7 @@ exports.index = async (req,res)=>{
 
         // Render the index template inside views/public/
         res.render('public/index', {
-            title: 'Blogify - Home',
+            title: 'Economixgna - Home',
             activePage: 'home',
             featuredPosts: featuredPosts,
             latestPosts: latestPosts,
@@ -189,7 +189,7 @@ exports.posts = async (req,res)=>{
 
             // Dynamic Meta Tag Injection
             meta: {
-                title: `${currentPost.title} | Blogify`,
+                title: `${currentPost.title} | Economixgna`,
                 description: currentPost.summary || currentPost.content.substring(0, 150).replace(/(<([^>]+)>)/gi, '') + '...',
                 image: currentPost.featured_image,
                 type: 'article'
@@ -213,8 +213,8 @@ exports.contact = async (req,res)=>{
             formData: {},
             error: null,
             meta: {
-            title: 'About Us - Our Story & Mission | Blogify',
-            description: 'Learn more about Blogify, our mission, and the engineering team behind our software development blog.'
+            title: 'About Us - Our Story & Mission | Economixgna',
+            description: 'Learn more about Economixgna, our mission, and the engineering team behind our software development blog.'
         }
 
         });
@@ -239,7 +239,7 @@ exports.contactForm = async(req,res)=>{
                     success: false,
                     error: 'All fields are required.',
                     formData,
-                    meta: { title: 'Contact Us | Blogify' }
+                    meta: { title: 'Contact Us | Economixgna' }
             });  
        }
 
@@ -250,7 +250,7 @@ exports.contactForm = async(req,res)=>{
                 success: false,
                 error: 'Please enter a valid email address.',
                 formData,
-                meta: { title: 'Contact Us | Blogify' }
+                meta: { title: 'Contact Us | Economixgna' }
             });        }
 
         // Write to contact_messages table matching your exact database schema
@@ -269,7 +269,7 @@ exports.contactForm = async(req,res)=>{
             success: false,
             error: 'Something went wrong on our end. Please try again later.',
             formData,
-            meta: { title: 'Contact Us | Blogify' }
+            meta: { title: 'Contact Us | Economixgna' }
         });
     }
 }
@@ -280,7 +280,7 @@ exports.contactForm = async(req,res)=>{
 exports.about = async(req,res) =>{
   try {
         res.render('public/about', {
-            title: 'About Us - Blogify',
+            title: 'About Us - Economixgna',
             activePage: 'about'
         });
         console.log('Hello')
@@ -305,8 +305,8 @@ exports.searchPage = async (req, res) => {
                 posts: [],
                 searchQuery: null,
                 meta: {
-            title: searchQuery ? `Search: "${searchQuery}" | Blogify` : 'Search Articles | Blogify',
-            description: `Search results for ${searchQuery || 'articles and tutorials on Blogify'}.`
+            title: searchQuery ? `Search: "${searchQuery}" | Economixgna` : 'Search Articles | Economixgna',
+            description: `Search results for ${searchQuery || 'articles and tutorials on Economixgna'}.`
         }
             });
         }
@@ -345,15 +345,15 @@ exports.getSitemap = async (req, res) => {
         xml += `<urlset xmlns="http://www.sitemapindices.org/schemas/sitemap/0.9">\n`;
 
         // Static Pages
-        xml += `  <url><loc>https://blogify.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
-        xml += `  <url><loc>https://blogify.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n`;
-        xml += `  <url><loc>https://blogify.com/blogs</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+        xml += `  <url><loc>https://Economixgna.com/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+        xml += `  <url><loc>https://Economixgna.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>\n`;
+        xml += `  <url><loc>https://Economixgna.com/blogs</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
 
         // Dynamic Post Pages
         posts.forEach(post => {
             const date = new Date(post.updated_at).toISOString();
             xml += `  <url>\n`;
-            xml += `    <loc>https://blogify.com/post/${post.id}</loc>\n`;
+            xml += `    <loc>https://Economixgna.com/post/${post.id}</loc>\n`;
             xml += `    <lastmod>${date}</lastmod>\n`;
             xml += `    <changefreq>weekly</changefreq>\n`;
             xml += `    <priority>0.7</priority>\n`;

@@ -1,28 +1,34 @@
-<%- include('../partials/header') %>
-
+<%- include('../partials/header') %> 
     <main class="container py-5">
-        <!-- Hero Section (Split screen) -->
-        <div class="row align-items-center mb-5 g-5">
-            <div class="col-md-6">
-                <span
-                    class="badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 small fw-semibold">Welcome
-                    to Blogify</span>
-                <h1 class="display-4 fw-bold tracking-tight text-dark mb-3" style="line-height: 1.2;">
-                    Thoughts, stories and ideas that inspire.
-                </h1>
-                <p class="text-muted fs-5 mb-4">
-                    Explore our latest articles on technology, lifestyle, productivity and more.
-                </p>
-                <a href="/blogs" class="btn btn-primary px-4 py-2.5 rounded-3 fw-medium">Explore Blogs</a>
-            </div>
-            <div class="col-md-6">
-                <!-- Placeholder image matched to Figma styling -->
-                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80"
-                    alt="Inspirational Hero" class="img-fluid rounded-4 shadow-sm"
-                    style="height: 380px; width: 100%; object-fit: cover;">
-            </div>
-        </div>
+<!-- Hero Section (Split screen) -->
+<div class="row align-items-center mb-5 g-5">
+    <div class="col-md-6">
+        <span
+            class="badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 small fw-semibold">
+            Welcome to Economixgna
+        </span>
 
+        <!-- Updated Heading: Mission Statement Core -->
+        <h1 class="display-4 fw-bold tracking-tight text-dark mb-3" style="line-height: 1.2;">
+            Making economics <span class="text-primary">simple, practical, and accessible</span> for every Ethiopian
+            household
+        </h1>
+
+        <!-- Updated Subtitle: Value proposition & CTA supporting line -->
+        <p class="text-muted fs-5 mb-4">
+            Delivering trusted insights, engaging conversations, and educational content to help you make informed
+            financial decisions.
+        </p>
+
+        <a href="/blogs" class="btn btn-primary px-4 py-2.5 rounded-3 fw-medium">Explore Blogs</a>
+    </div>
+    <div class="col-md-6">
+        <!-- Placeholder image matched to Figma styling -->
+        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=800&q=80"
+            alt="Inspirational Hero" class="img-fluid rounded-4 shadow-sm"
+            style="height: 380px; width: 100%; object-fit: cover;">
+    </div>
+</div>
         <!-- Featured Section -->
         <section class="mb-5">
             <h4 class="fw-bold mb-4">Featured Posts</h4>
@@ -74,7 +80,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <span class="badge bg-light text-primary mb-2">
-                                        <%= post.category %>
+                                        <%= post.category_name %>
                                     </span>
                                     <h5 class="fw-bold mb-2">
                                         <a href="/post/<%= post.id %>" class="text-decoration-none text-dark">

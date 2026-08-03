@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogify - Admin Login</title>
+    <title>Economixgna - Admin Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%230d6efd'/><text x='16' y='21' font-family='Times New Roman, Times, serif' font-size='20' font-weight='bold' fill='white' text-anchor='middle' transform='rotate(-30 16 16)'>E</text></svg>">
     <style>
         :root {
             --primary-color: #2563eb;
@@ -40,10 +42,15 @@
 
     <div class="card login-card p-4">
         <div class="text-center mb-4">
-            <div class="d-flex align-items-center justify-content-center fw-bold fs-4 mb-2"
-                style="color: var(--primary-color);">
-                <i class="bi bi-box-fill me-2"></i> Blogify
-            </div>
+            <a class="navbar-brand d-inline-flex align-items-center justify-content-center fw-bold fs-4 text-dark mb-2"
+                href="/admin">
+                <span class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-2"
+                    style="width: 32px; height: 32px;">
+                    <i class="bi fs-5"
+                        style="font-family: 'Times New Roman', Times, serif; display: inline-block; rotate: calc(-30deg);">E</i>
+                </span>
+                Economixgna
+            </a>
             <h5 class="fw-bold mb-1">Welcome back!</h5>
             <p class="text-muted small">Login to your admin account</p>
         </div>
@@ -82,7 +89,7 @@
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-medium rounded-2">Login</button>
                 </form>
                 <div class="text-center mt-5 text-muted style" style="font-size: 11px;">
-                    &copy; 2026 Blogify. All rights reserved.
+                    &copy; 2026 Economixgna. All rights reserved.
                 </div>
     </div>
 

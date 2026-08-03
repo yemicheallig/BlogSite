@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <%= typeof title !=='undefined' ? title : 'Blogify' %>
+        <%= typeof title !=='undefined' ? title : 'Economixgna ' %>
     </title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,21 +15,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-        <!-- Primary Meta Titles & Descriptions -->
-        <title>
-            <%= typeof meta !=='undefined' && meta.title ? meta.title : 'Blogify - Modern Developer & Tech Blog' %>
-        </title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%230d6efd'/><text x='16' y='21' font-family='Times New Roman, Times, serif' font-size='20' font-weight='bold' fill='white' text-anchor='middle' transform='rotate(-30 16 16)'>E</text></svg>">
+      
         <meta name="description"
             content="<%= typeof meta !== 'undefined' && meta.description ? meta.description : 'Read insightful articles on web development, tech trends, and modern software design.' %>">
     
         <!-- Open Graph / Social Media Sharing (Optional Bonus) -->
         <meta property="og:type" content="<%= typeof meta !== 'undefined' && meta.type ? meta.type : 'website' %>">
-        <meta property="og:title" content="<%= typeof meta !== 'undefined' && meta.title ? meta.title : 'Blogify' %>">
+        <meta property="og:title" content="<%= typeof meta !== 'undefined' && meta.title ? meta.title : 'Economixgna ' %>">
         <meta property="og:description"
             content="<%= typeof meta !== 'undefined' && meta.description ? meta.description : 'Explore tech and development articles.' %>">
         <% if (typeof meta !=='undefined' && meta.image) { %>
@@ -40,8 +35,7 @@
                 <link rel="stylesheet" href="/css/style.css">
                 <!-- Canonical URL -->
                 <link rel="canonical"
-                    href="<%= typeof meta !== 'undefined' && meta.canonical ? meta.canonical : 'https://blogify.com' + req.originalUrl.split('?')[0] %>">
-    </head>
+                    href="<%= typeof meta !== 'undefined' && meta.canonical ? meta.canonical : 'https://Economixgna .com' + req.originalUrl.split('?')[0] %>">
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -85,14 +79,15 @@
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top py-3">
         <div class="container">
-            <!-- Brand Logo matching design (Blue circle icon + Blogify text) -->
-            <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-dark" href="/">
+            <!-- Brand Logo matching design (Blue circle icon + Economixgna  text) -->
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-4 text-dark"
+             href="/">
                 <span
                     class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center me-2"
                     style="width: 32px; height: 32px;">
-                    <i class="bi bi-bootstrap-fill fs-6"></i>
+                    <i class="bi fs-5" style="font-family: 'Times New Roman', Times, serif;display: inline-block;rotate: calc(-30deg);">E</i>
                 </span>
-                Blogify
+                Economixgna 
             </a>
 
             <button class="navbar-expand-lg navbar-toggler" type="button" data-bs-toggle="collapse"

@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const app = express();
+require('dotenv').config();
 require('events').EventEmitter.defaultMaxListeners = 20;
 
 // 1. Configure view engine and static assets FIRST
@@ -15,7 +16,7 @@ app.use(express.json());
 
 // 3. Set up sessions
 app.use(session({
-  secret: 'super_secret_session_key',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
