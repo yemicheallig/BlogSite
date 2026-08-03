@@ -200,8 +200,9 @@ exports.getDashboard = async (req, res) => {
     try {
         // 1. Execute aggregate queries in parallel
         const [totalPostsQuery] = await db.query('SELECT COUNT(*) AS count FROM posts');
-        const [publishedPostsQuery] = await db.query('SELECT COUNT(*) AS count FROM posts WHERE status = "published"');
-        const [draftPostsQuery] = await db.query('SELECT COUNT(*) AS count FROM posts WHERE status = "draft"');
+const [publishedPostsQuery] = await db.query(
+  `SELECT COUNT(*) AS count FROM posts WHERE status = 'published'`
+);        const [draftPostsQuery] = await db.query('SELECT COUNT(*) AS count FROM posts WHERE status = "draft"');
         const [categoriesQuery] = await db.query('SELECT COUNT(*) AS count FROM categories');
         
         // Dynamic count of media files (unique images uploaded in posts + avatars)
