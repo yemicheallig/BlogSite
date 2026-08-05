@@ -252,16 +252,6 @@ exports.logOut =  async  (req, res) => {
             return res.redirect('/admin/dashboard');
         }
         res.clearCookie('connect.sid'); // Clear the session cookie
-        res.redirect('/'); // Or '/admin/login'
+        res.redirect('/'); 
     });
-};
-
-// Handle Logout
-exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Logout error:', err);
-    }
-    res.redirect('/login');
-  });
-};
+}

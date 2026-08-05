@@ -155,7 +155,9 @@ exports.posts = async (req,res)=>{
         );
 
         if (posts.length === 0) {
-            return res.status(404).send('Post Not Found');
+            return res.status(404).render('404', { 
+                 title: 'Post Not Found',
+        });    
         }
 
         const currentPost = posts[0];
