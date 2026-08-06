@@ -155,9 +155,14 @@ exports.posts = async (req,res)=>{
         );
 
         if (posts.length === 0) {
-            return res.status(404).render('404', { 
-                title: 'Post Not Found',
-        });    
+            res.status(404).render('public/404', {
+        title: '404 - Page Not Found | Blogify',
+        activePage: '',
+        meta: {
+            title: '404 - Page Not Found | Blogify',
+            description: 'The requested page could not be found on Blogify.'
+        }
+    });
         }
 
         const currentPost = posts[0];
