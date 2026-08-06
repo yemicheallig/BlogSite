@@ -139,9 +139,8 @@ exports.blogs = async (req,res)=>{
 // =========================================================================
 // 3. SINGLE POST READER
 // =========================================================================
-exports.posts = async (req,res)=>{
-
-  try {
+exports.posts = async (req, res) => {
+    try {
         const postId = req.params.id;
 
         // 1. Fetch current post
@@ -154,21 +153,22 @@ exports.posts = async (req,res)=>{
             [postId]
         );
 
+        // Add 'return' here to stop execution if post doesn't exist
         if (posts.length === 0) {
-            res.status(404).render('public/404', {
-        title: '404 - Page Not Found | Blogify',
-        activePage: '',
-        meta: {
-            title: '404 - Page Not Found | Blogify',
-            description: 'The requested page could not be found on Blogify.'
-        }
-    });
+            return res.status(404).render('public/404', {
+                title: '404 - Page Not Found | Blogify',
+                activePage: '',
+                meta: {
+                    title: '404 - Page Not Found | Blogify',
+                    description: 'The requested page could not be found on Blogify.'
+                }
+            });
         }
 
         const currentPost = posts[0];
 
         // 2. Reading Time Calculation (avg 200 words per minute)
-        const wordCount = currentPost.content.split(/\s+/).length;
+        const wordCount = (currentPost.content || '').split(/\s+/).length;
         const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
         // 3. Get Previous published post (ID smaller than current)
@@ -197,7 +197,7 @@ exports.posts = async (req,res)=>{
             // Dynamic Meta Tag Injection
             meta: {
                 title: `${currentPost.title} | Economixgna`,
-                description: currentPost.summary || currentPost.content.substring(0, 150).replace(/(<([^>]+)>)/gi, '') + '...',
+                description: currentPost.summary || (currentPost.content || '').substring(0, 150).replace(/(<([^>]+)>)/gi, '') + '...',
                 image: currentPost.featured_image,
                 type: 'article'
             }
@@ -207,7 +207,7 @@ exports.posts = async (req,res)=>{
         console.error('Error rendering single post:', error);
         res.status(500).send('Internal Server Error');
     }
-}
+};
 
 // =========================================================================
 // 4. CONTACT PAGE (GET & POST)
