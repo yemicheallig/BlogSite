@@ -113,13 +113,17 @@
                 </ul>
 
                 <!-- Search bar on the right -->
-                <form class="d-flex position-relative" action="/search" method="GET" style="max-width: 240px;">
-                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-muted">
+                <form class="d-flex position-relative align-items-center" action="/search" method="GET" style="max-width: 260px;">
+                    <input class="form-control ps-3 pe-5 rounded-pill border-light-subtle bg-light" type="search" name="q"
+                        placeholder="Search..." aria-label="Search" required>
+                    <button type="submit"
+                        class="btn btn-link text-muted position-absolute end-0 top-50 translate-middle-y pe-3 border-0 shadow-none"
+                        aria-label="Submit search">
                         <i class="bi bi-search"></i>
-                    </span>
-                    <input class="form-control ps-5 rounded-pill border-light-subtle bg-light" type="search" name="q"
-                        placeholder="Search..." aria-label="Search">
+                    </button>
                 </form>
+
+
             </div>
         </div>
     </nav>

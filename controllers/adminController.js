@@ -200,10 +200,10 @@ exports.getDashboard = async (req, res) => {
     try {
         // 1. Execute aggregate queries in parallel
         const [totalPostsQuery] = await db.query('SELECT COUNT(*) AS count FROM posts');
-const [publishedPostsQuery] = await db.query(
+        const [publishedPostsQuery] = await db.query(
   `SELECT COUNT(*) AS count FROM posts WHERE status = 'published'`
 );        
-const [draftPostsQuery] = await db.query("SELECT COUNT(*) AS count FROM posts WHERE status = 'draft'");        const [categoriesQuery] = await db.query('SELECT COUNT(*) AS count FROM categories');
+        const [draftPostsQuery] = await db.query("SELECT COUNT(*) AS count FROM posts WHERE status = 'draft'");        const [categoriesQuery] = await db.query('SELECT COUNT(*) AS count FROM categories');
         
         // Dynamic count of media files (unique images uploaded in posts + avatars)
         const [mediaQuery] = await db.query(`
@@ -242,6 +242,51 @@ const [draftPostsQuery] = await db.query("SELECT COUNT(*) AS count FROM posts WH
     } catch (err) {
         console.error("Dashboard Metrics Error:", err);
         res.status(500).send("Error loading admin dashboard.");
+    }
+};
+
+exports.getInbox = async (req, res) => {
+    try {
+        const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+        const limit = 10;
+        const offset = (page - 1) * limit;
+
+        // 1. Fetch total count and paginated messages in parallel
+        const [[countResult], [messages]] = await Promise.all([
+            db.query('SELECT COUNT(*) AS count FROM contact_messages'),
+            db.query(
+                `SELECT id, name, email, subject, message, created_at 
+                 FROM contact_messages 
+                 ORDER BY created_at DESC 
+                 LIMIT ? OFFSET ?`,
+                [limit, offset]
+            )
+        ]);
+
+        const totalMessages = countResult[0].count;
+        const totalPages = Math.ceil(totalMessages / limit) || 1;
+
+        // 2. Render inbox view with pagination metrics
+        res.render('admin/inbox', { 
+            messages,
+            currentPage: page,
+            totalPages,
+            totalMessages,
+            user: req.session.adminUser 
+        });
+
+    } catch (err) {
+        console.error("Inbox Fetch Error:", err);
+        res.status(500).send("Error loading admin inbox.");
+    }
+};
+
+exports.deleteMessage = async (req, res) => {
+    try {
+        await db.execute('DELETE FROM contact_messages WHERE id = ?', [req.params.id]);
+        res.redirect('/admin/inbox');
+    } catch (err) {
+        res.status(500).send("Error deleting message.");
     }
 };
 

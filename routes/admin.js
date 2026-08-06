@@ -43,6 +43,7 @@ router.get('/admin/login', adminController.getLogin);
 router.post('/admin/login', adminController.postLogin);
 router.get('/admin/profile', isAdmin, adminController.getProfile);
 router.get('/admin/dashboard', isAdmin, adminController.getDashboard);
+router.get('/admin/inbox', adminController.getInbox);
 router.get('/admin/logout', adminController.logOut);
 
 
@@ -75,7 +76,8 @@ router.get('/admin/posts/edit/:id', isAdmin, postController.getEditPost);
 router.post('/admin/posts/edit/:id', isAdmin, uploadPostImg.single('featured_image'), postController.postEditPost);
 router.post('/admin/posts/delete/:id', isAdmin, postController.deletePost);
 router.post('/admin/posts/toggle-status/:id', isAdmin, postController.togglePostStatus);
+router.post('/admin/inbox/:id/delete', isAdmin, adminController.deleteMessage);
 
-router.get('/logout', adminController.logout);
+router.get('/logout', adminController.logOut);
 
 module.exports = router;

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox - Admin Dashboard</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%232563eb'/><text x='16' y='21' font-family='sans-serif' font-size='20' font-weight='bold' fill='white' text-anchor='middle'>E</text></svg>">
+
+    <!-- Google Fonts & Bootstrap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --admin-sidebar-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Sidebar Base Styles */
+        .sidebar {
+            background-color: var(--admin-sidebar-bg);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1045;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar .nav-link {
+            color: #94a3b8;
+            border-radius: 6px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: #1e293b;
+        }
+
+        .main-content {
+            padding: 2rem;
+            transition: margin-left 0.3s ease-in-out;
+        }
+
+        /* Mobile specific styles */
+        @media (max-width: 767.98px) {
+            .sidebar {
+                width: 280px;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.25rem;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+                opacity: 0;
+                transition: opacity 0.3s ease-in-out;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
+        }
+
+        /* Desktop specific styles */
+        @media (min-width: 768px) {
+            .sidebar {
+                transform: translateX(0) !important;
+            }
+
+            .main-content {
+                margin-left: 25%;
+                /* Matches col-md-3 */
+            }
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                margin-left: 16.66667%;
+                /* Matches col-lg-2 */
+            }
+        }
+
+        .metric-card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-thumbnail {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 sidebar p-3 text-white">
+                <div class="d-flex align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                    <span class="fs-5 fw-bold text-white">Economixgna</span>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/admin/inbox">
+                            <i class="bi bi-inbox me-2"></i> Inbox
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/posts">
+                            <i class="bi bi-file-earmark-text me-2"></i> Posts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/profile">
+                            <i class="bi bi-person me-2"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item mt-5">
+                        <a class="nav-link text-danger" href="/admin/logout">
+                            <i class="bi bi-box-arrow-left me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content Area -->
+            <main class="col-12 main-content ms-auto col-md-9 col-lg-10">
+                <!-- Topbar Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary d-md-none me-3" id="sidebarToggle" type="button">
+                            <i class="bi bi-list fs-5"></i>
+                        </button>
+                        <div>
+                            <h1 class="h4 fw-bold text-dark mb-0">Contact Messages</h1>
+                            <p class="text-muted small mb-0 d-none d-sm-block">Manage and respond to inquiry submissions
+                                from your site visitors.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <img src="<%= (typeof user !== 'undefined' && user.avatar) ? user.avatar : 'https://via.placeholder.com/36' %>"
+                            class="rounded-circle border" width="36" height="36" alt="User Avatar">
+                        <div class="lh-sm d-none d-sm-block">
+                            <div class="small fw-bold text-dark">
+                                <%= (typeof user !=='undefined' && user.name) ? user.name : 'Admin' %>
+                            </div>
+                            <div class="text-muted" style="font-size: 11px;">Administrator</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inbox Card -->
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0 text-dark fs-6">
+                            <i class="bi bi-envelope-paper me-2 text-primary"></i> Submissions
+                        </h5>
+                        <span class="badge bg-light text-secondary border px-3 py-2 rounded-pill">
+                            <%= messages ? messages.length : 0 %> Total Messages
+                        </span>
+                    </div>
+
+                    <!-- Messages Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-nowrap">
+                            <thead class="table-light">
+                                <tr class="text-secondary small">
+                                    <th class="ps-4">SENDER</th>
+                                    <th>SUBJECT</th>
+                                    <th>DATE RECEIVED</th>
+                                    <th class="text-end pe-4">ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (!messages || messages.length===0) { %>
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5 text-muted">
+                                            <i class="bi bi-inbox fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                                            <span>No messages found in your inbox.</span>
+                                        </td>
+                                    </tr>
+                                    <% } else { %>
+                                        <% messages.forEach(msg=> { %>
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="fw-semibold text-dark">
+                                                        <%= msg.name %>
+                                                    </div>
+                                                    <div class="text-muted small">
+                                                        <%= msg.email %>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="text-truncate d-inline-block text-secondary"
+                                                        style="max-width: 300px;">
+                                                        <%= msg.subject %>
+                                                    </span>
+                                                </td>
+                                                <td class="text-muted small">
+                                                    <%= new Date(msg.created_at).toLocaleDateString('en-US', {
+                                                        year: 'numeric' , month: 'short' , day: 'numeric' ,
+                                                        hour: '2-digit' , minute: '2-digit' }) %>
+                                                </td>
+                                                <td class="text-end pe-4">
+                                                    <button class="btn btn-sm btn-outline-primary me-1 view-msg-btn"
+                                                        data-id="<%= msg.id %>" data-name="<%= msg.name %>"
+                                                        data-email="<%= msg.email %>" data-subject="<%= msg.subject %>"
+                                                        data-date="<%= new Date(msg.created_at).toLocaleString() %>"
+                                                        data-message="<%= msg.message %>" data-bs-toggle="modal"
+                                                        data-bs-target="#messageModal">
+                                                        <i class="bi bi-eye me-1"></i> Read
+                                                    </button>
+                                                    <form action="/admin/inbox/<%= msg.id %>/delete" method="POST"
+                                                        class="d-inline"
+                                                        onsubmit="return confirm('Are you sure you want to delete this message?');">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages> 1) { %>
+                <nav aria-label="Inbox pagination" class="mt-3">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                                <a class="page-link" href="/admin/inbox?page=<%= currentPage - 1 %>">Previous</a>
+                            </li>
+                
+                            <% for (let i=1; i <=totalPages; i++) { %>
+                                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                    <a class="page-link" href="/admin/inbox?page=<%= i %>">
+                                        <%= i %>
+                                    </a>
+                                </li>
+                                <% } %>
+                
+                                    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                                        <a class="page-link" href="/admin/inbox?page=<%= currentPage + 1 %>">Next</a>
+                                    </li>
+                        </ul>
+                </nav>
+                    <% } %>
+            </main>
+        </div>
+    </div>
+
+    <!-- View Message Details Modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark" id="modalSubject">Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 bg-light p-3 rounded-3 border">
+                        <div>
+                            <div class="fw-bold text-dark" id="modalSenderName">Sender Name</div>
+                            <a href="#" id="modalSenderEmail"
+                                class="text-decoration-none small text-primary">sender@example.com</a>
+                        </div>
+                        <span class="text-muted small" id="modalDate">Date</span>
+                    </div>
+                    <div class="p-1">
+                        <h6 class="text-muted small text-uppercase mb-2 fw-bold" style="letter-spacing: 0.5px;">Message
+                            Content</h6>
+                        <div id="modalBody" class="p-3 bg-white rounded border text-secondary"
+                            style="white-space: pre-wrap; word-break: break-word; min-height: 100px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-3 border"
+                        data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Sidebar & Modal Handling Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Mobile Toggle Logic
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('show');
+                if (overlay.classList.contains('show')) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.classList.remove('show'), 300);
+                } else {
+                    overlay.classList.add('show');
+                    setTimeout(() => overlay.style.opacity = '1', 10);
+                }
+            }
+
+            if (toggleBtn && overlay) {
+                toggleBtn.addEventListener('click', toggleSidebar);
+                overlay.addEventListener('click', toggleSidebar);
+            }
+
+            // Populate View Message Modal
+            const viewButtons = document.querySelectorAll('.view-msg-btn');
+            viewButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const name = btn.getAttribute('data-name');
+                    const email = btn.getAttribute('data-email');
+                    const subject = btn.getAttribute('data-subject');
+                    const date = btn.getAttribute('data-date');
+                    const message = btn.getAttribute('data-message');
+
+                    document.getElementById('modalSubject').textContent = subject;
+                    document.getElementById('modalSenderName').textContent = name;
+                    document.getElementById('modalSenderEmail').textContent = email;
+                    document.getElementById('modalSenderEmail').href = `mailto:${email}`;
+                    document.getElementById('modalDate').textContent = date;
+                    document.getElementById('modalBody').textContent = message;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
