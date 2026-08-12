@@ -64,8 +64,7 @@ exports.blogs = async (req,res)=>{
         const page = parseInt(req.query.page) || 1;
         const offset = (page - 1) * limit;
         
-        const selectedCategory = req.query.category || null;
-        const searchQuery = req.query.q || null;
+        const selectedCategory = req.query.category ? decodeURIComponent(req.query.category) : null;        const searchQuery = req.query.q || null;
 
         let whereClauses = ["p.status = 'published'"];
         let queryParams = [];
