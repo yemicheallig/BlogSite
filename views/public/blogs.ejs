@@ -112,10 +112,10 @@
                             <span>All Categories</span>
                         </a>
                         <% categories.forEach(cat=> { %>
-                            <a href="/blogs?category=<%= cat.name %>"
-                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 py-2 border-0 bg-transparent <%= selectedCategory === cat.name ? 'text-primary fw-semibold' : 'text-muted' %>">
+                            <a href="/blogs?category=<%= encodeURIComponent(cat.name) %>"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0 py-2 border-0 bg-transparent text-secondary hover-primary">
                                 <span># <%= cat.name %></span>
-                                <span class="badge bg-light text-secondary rounded-pill">
+                                <span class="badge bg-light text-dark border rounded-pill">
                                     <%= cat.count %>
                                 </span>
                             </a>
