@@ -1,5 +1,11 @@
 <%- include('../partials/header') %>
+    <!-- Modern Font Pair: Plus Jakarta Sans (Headings) + Lora (Editorial Body) -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+        rel="stylesheet">
 
+        
     <!-- Custom Styling for Interactive Elements & Animations -->
     <style>
         /* Hover Effects for Social Share & Navigation Buttons */
@@ -34,6 +40,39 @@
             animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
+        /* Article Typography Enhancements */
+    .post-title {
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        letter-spacing: -0.03em;
+        line-height: 1.18;
+        color: #0F172A; /* Deep dark slate */
+    }
+
+    .article-body {
+        font-family: 'Lora', Georgia, serif;
+        font-size: 1.2rem; /* 19.2px optimal reading size */
+        line-height: 1.85; /* Relaxed breathing room */
+        color: #2B3442; /* High-contrast readable charcoal */
+        letter-spacing: -0.003em;
+        max-width: 740px; /* Prevents text lines from getting too wide to scan */
+    }
+
+    .article-body p {
+        margin-bottom: 1.75rem;
+    }
+
+    /* Subtle drop-cap for first character */
+    .article-body::first-letter {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 3.4rem;
+        font-weight: 800;
+        float: left;
+        line-height: 0.8;
+        margin-right: 0.6rem;
+        margin-top: 0.2rem;
+        color: #0D281E; /* Blacked green tint */
+    }
+
         @keyframes fadeUp {
             from {
                 opacity: 0;
@@ -62,47 +101,50 @@
         <!-- Post Header Info -->
         <header class="mb-4">
             <span
-                class="badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 fw-semibold">
+                class="badge bg-light text-primary border border-primary-subtle px-3 py-2 rounded-pill mb-3 fw-semibold text-uppercase"
+                style="letter-spacing: 0.05em; font-size: 0.75rem;">
                 # <%= post.category_name %>
             </span>
-            <h1 class="display-5 fw-bold text-dark mb-3">
+        
+            <h1 class="post-title display-4 fw-extrabold mb-4">
                 <%= post.title %>
             </h1>
-
-            <div class="d-flex align-items-center gap-3 text-muted">
+        
+            <div class="d-flex align-items-center gap-3 text-muted pb-2 border-bottom">
                 <!-- Author Avatar & Details -->
                 <% if (post.author_avatar) { %>
                     <img loading="lazy" decoding="async" src="<%= post.author_avatar %>" alt="<%= post.author_name %>"
-                        class="rounded-circle shadow-sm" style="width: 44px; height: 44px; object-fit: cover;">
+                        class="rounded-circle shadow-sm" style="width: 48px; height: 48px; object-fit: cover;">
                     <% } else { %>
                         <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-sm"
-                            style="width: 44px; height: 44px;">
+                            style="width: 48px; height: 48px;">
                             <%= post.author_name.charAt(0).toUpperCase() %>
                         </div>
                         <% } %>
+        
                             <div>
-                                <p class="mb-0 fw-semibold text-dark">
+                                <p class="mb-0 fw-bold text-dark" style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                     <%= post.author_name %>
                                 </p>
-                                <small class="text-muted">
-                                    <%= new Date(post.created_at).toLocaleDateString('en-US', { month: 'long' ,
-                                        day: 'numeric' , year: 'numeric' }) %> • <%= readingTime %> min read
+                                <small class="text-secondary">
+                                    <%= new Date(post.created_at).toLocaleDateString('en-US', { month: 'long' , day: 'numeric' ,
+                                        year: 'numeric' }) %> • <%= readingTime %> min read
                                 </small>
                             </div>
             </div>
         </header>
-
+        
         <!-- Featured Image -->
         <div class="mb-5 overflow-hidden rounded-4 shadow-sm">
             <img loading="lazy" decoding="async"
                 src="<%= post.featured_image || 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80' %>"
                 alt="<%= post.title %>" class="img-fluid w-100"
-                style="max-height: 450px; object-fit: cover; transition: transform 0.5s ease;"
+                style="max-height: 480px; object-fit: cover; transition: transform 0.5s ease;"
                 onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
         </div>
-
+        
         <!-- Main Content Body -->
-        <article class="lh-lg text-secondary fs-5 mb-5" style="white-space: pre-line;">
+        <article class="article-body mx-auto mb-5" style="white-space: pre-line;">
             <%= post.content %>
         </article>
 
