@@ -1,8 +1,39 @@
 <%- include('../partials/header') %>
 <style>
-    /* Active State Styling */
+    /* Base Category Link Styling */
+.category-link {
+    background-color: #ffffff !important; /* Forces background to stay white */
+    transition: all 0.2s ease-in-out;
+}
+
+.category-text {
+    color: #212529 !important; /* Dark gray/black text for high contrast */
+}
+
+.category-badge {
+    background-color: #f8f9fa !important;
+    color: #495057 !important;
+    border-color: #dee2e6 !important;
+}
+
+/* Hover State */
+.category-link:hover {
+    background-color: #f1f5f3 !important; /* Subtle soft tint on hover */
+}
+
+.category-link:hover .category-text {
+    color: #0D281E !important; /* Blacked green on hover */
+}
+
+.category-link:hover .category-badge {
+    background-color: #0D281E !important;
+    color: #ffffff !important;
+    border-color: #0D281E !important;
+}
+
+/* Active Selected State */
 .category-link.active-category {
-    background-color: #0D281E !important; /* Blacked green background for active state */
+    background-color: #0D281E !important;
 }
 
 .category-link.active-category .category-text {
@@ -118,29 +149,29 @@
             </div>
 
             <!-- Sidebar Categories -->
-        <div class="col-lg-4">
-            <div class="card border-0 bg-white p-4 rounded-4 shadow-sm position-sticky" style="top: 100px;">
-                <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">Filter by Category</h5>
-                <div class="d-flex flex-column gap-1">
-                    <!-- All Categories -->
-                    <a href="/blogs"
-                        class="category-link d-flex justify-content-between align-items-center py-2 px-3 rounded-3 text-decoration-none <%= !selectedCategory ? 'active-category' : '' %>">
-                        <span class="category-text fw-medium">All Categories</span>
-                    </a>
-        
-                    <!-- Individual Categories -->
-                    <% categories.forEach(cat=> { %>
-                        <a href="/blogs?category=<%= encodeURIComponent(cat.name) %>"
-                            class="category-link d-flex justify-content-between align-items-center py-2 px-3 rounded-3 text-decoration-none <%= selectedCategory === cat.name ? 'active-category' : '' %>">
-                            <span class="category-text fw-medium"># <%= cat.name %></span>
-                            <span class="badge category-badge border rounded-pill px-2.5 py-1.5">
-                                <%= cat.count %>
-                            </span>
+            <div class="col-lg-4">
+                <div class="card border-0 bg-white p-4 rounded-4 shadow-sm position-sticky" style="top: 100px;">
+                    <h5 class="fw-bold text-dark mb-3 pb-2 border-bottom">Filter by Category</h5>
+                    <div class="d-flex flex-column gap-1">
+                        <!-- All Categories Link -->
+                        <a href="/blogs"
+                            class="category-link d-flex justify-content-between align-items-center py-2 px-3 rounded-3 text-decoration-none <%= !selectedCategory ? 'active-category' : '' %>">
+                            <span class="category-text fw-medium">All Categories</span>
                         </a>
-                        <% }) %>
+            
+                        <!-- Individual Categories -->
+                        <% categories.forEach(cat=> { %>
+                            <a href="/blogs?category=<%= encodeURIComponent(cat.name) %>"
+                                class="category-link d-flex justify-content-between align-items-center py-2 px-3 rounded-3 text-decoration-none <%= selectedCategory === cat.name ? 'active-category' : '' %>">
+                                <span class="category-text fw-medium"># <%= cat.name %></span>
+                                <span class="badge category-badge border rounded-pill px-2.5 py-1.5">
+                                    <%= cat.count %>
+                                </span>
+                            </a>
+                            <% }) %>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </main>
 
